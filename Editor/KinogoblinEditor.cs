@@ -1,6 +1,6 @@
 ﻿namespace Kinogoblin
 {
-    //Version 1.8
+    //Version 1.9
     using System.Collections.Generic;
     using System.Globalization;
     using UnityEngine;
@@ -18,7 +18,7 @@
 
     class EditorSettings : EditorWindow
     {
-        [MenuItem("Tools/Kinogoblin tools/Set Settings Window")]
+        [MenuItem("Tools/Kinogoblin tools/Set Settings Window #w")]
 
         public static void ShowWindow()
         {
@@ -28,7 +28,8 @@
         private Material checkedMaterial = null;
         private TypesOfSettings type;
 
-        private bool smallSettings = false;
+        private bool _smallSettings = false;
+        public static Color hierarchyColor = new Color(0.5f,0,1);
 
         public UnityEngine.Object source = null;
         public GameObject gameObjectSource;
@@ -245,7 +246,9 @@
 
         #region SettingsForGameobject
 
-        #region CreateNewPivote
+        /// //////////////////////
+
+            #region CreateNewPivote
 
         private const string GENERATED_COLLIDER_NAME = "__GeneratedCollider";
         private const string GENERATED_NAVMESH_OBSTACLE_NAME = "__GeneratedNavMeshObstacle";
@@ -544,21 +547,21 @@
 
         #endregion
 
+        /// //////////////////////
+
         public void SettingsForGameobjectGUI()
         {
             GUILayout.Label("Settings for GameObjects", EditorStyles.boldLabel);
 
             GUILayout.Space(10f);
 
-            if (GUILayout.Button("Create Pivote"))
+            if (GUILayout.Button("Create child Pivote in center"))
             {
-                SetGameObjestSettings.SetPivote(true);
+                SetGameObjestSettings.SetPivote();
             }
-            if (GUILayout.Button("Create Pivote for several gameObjects"))
+            if (GUILayout.Button("Create group of GO"))
             {
-                Debug.Log("<color=blue>Kinogoblin Editor</color> Set new material");
-
-                SetGameObjestSettings.SetPivote(false);
+                SetGameObjestSettings.GroupSelected();
             }
 
             if (buttonStyle == null)
@@ -676,23 +679,12 @@
         {
 
             [MenuItem("Tools/Kinogoblin tools/Shortcuts/NewPivote #p")]
-            static public void SetPivote(bool one)
+            static public void SetPivote()
             {
                 if (Selection.activeGameObject != null)
                 {
-                    if (one)
-                    {
-                        Debug.Log("<color=blue>Kinogoblin Editor</color> Set new pivote for " + Selection.activeGameObject.name);
-                        CreatePivote(Selection.activeGameObject);
-                    }
-                    else
-                    {
-                        foreach (var item in Selection.gameObjects)
-                        {
-                            Debug.Log("<color=blue>Kinogoblin Editor</color> Set new pivote for " + item.name);
-                            CreatePivote(item);
-                        }
-                    }
+                    Debug.Log("<color=blue>Kinogoblin Editor</color> Set new pivote for " + Selection.activeGameObject.name);
+                    CreatePivote(Selection.activeGameObject);
                 }
                 else
                 {
@@ -761,9 +753,8 @@
                     pivote.transform.position = go.GetComponent<Renderer>().bounds.center;
                     if (go.transform.parent != null)
                     {
-                        pivote.transform.parent = go.transform.parent;
+                        pivote.transform.parent = go.transform;
                     }
-                    go.transform.parent = pivote.transform;
                 }
                 else
                 {
@@ -771,6 +762,32 @@
                 }
             }
 
+
+            [MenuItem("Tools/Kinogoblin tools/Shortcuts/Group Selected #g")]
+            static public void GroupSelected()
+            {
+                if (!Selection.activeTransform) return;
+                var go = new GameObject(Selection.activeTransform.name + " Group");
+                Undo.RegisterCreatedObjectUndo(go, "Group Selected");
+                go.transform.SetParent(Selection.activeTransform.parent, false);
+                Vector3 center = new Vector3();
+                float x = 0;
+                float y = 0;
+                float z = 0;
+                foreach (var transform in Selection.transforms)
+                {
+                    x += transform.position.x;
+                    y += transform.position.y;
+                    z += transform.position.z;
+                }
+                center = new Vector3((x/Selection.transforms.Length), (y / Selection.transforms.Length), (z / Selection.transforms.Length));
+                go.transform.position = center;
+                foreach (var transform in Selection.transforms)
+                {
+                    Undo.SetTransformParent(transform, go.transform, "Group Selected"); 
+                }
+                Selection.activeGameObject = go;
+            }
 
 
         }
@@ -782,34 +799,26 @@
 
         public void FolderUtilsGUI()
         {
-            GUILayout.Label("Folder utils", EditorStyles.boldLabel);
+            GUILayout.Label("Scene utils", EditorStyles.boldLabel);
             GUILayout.Space(10f);
             if (GUILayout.Button("Create Scene Catalog"))
             {
                 CreateProjectsComponents.SceneCreate();
             }
+            hierarchyColor = EditorGUILayout.ColorField("Color divisions", hierarchyColor);
+            GUILayout.Space(10f);
+            GUILayout.Label("Folder utils", EditorStyles.boldLabel);
+            GUILayout.Space(10f);
+            _smallSettings = GUILayout.Toggle(_smallSettings, "Choose small variant");
             if (GUILayout.Button("Create Folder Catalog"))
             {
-                CreateProjectsComponents.FolderCreate();
+                CreateProjectsComponents.FolderCreate(_smallSettings);
             }
-            smallSettings = GUILayout.Toggle(smallSettings, "Choose small variant");
             if (GUILayout.Button("Create Folder Catalog under active folder"))
             {
-                CreateProjectsComponents.FolderCreateUnderActive(CreateProjectsComponents.GetSelectedPathOrFallback(), smallSettings);
+                CreateProjectsComponents.FolderCreateUnderActive(CreateProjectsComponents.GetSelectedPathOrFallback(), _smallSettings);
             }
         }
-
-        [MenuItem("Tools/Kinogoblin tools/Shortcuts/Group Selected #g")]
-        private static void GroupSelected()
-        {
-            if (!Selection.activeTransform) return;
-            var go = new GameObject(Selection.activeTransform.name + " Group");
-            Undo.RegisterCreatedObjectUndo(go, "Group Selected");
-            go.transform.SetParent(Selection.activeTransform.parent, false);
-            foreach (var transform in Selection.transforms) Undo.SetTransformParent(transform, go.transform, "Group Selected");
-            Selection.activeGameObject = go;
-        }
-
     }
 
     static class CreateProjectsComponents
@@ -820,33 +829,64 @@
             Debug.Log("<color=blue>Kinogoblin Editor</color> Create scene catalog");
             var cameraObj = new GameObject("---Player---").transform;
             var scriptObj = new GameObject("---Managers---").transform;
-            var audioObj = new GameObject("---Audio---").transform;
             var lightObj = new GameObject("---Light---").transform;
-            var staticObj = new GameObject("---Static Objects---").transform;
-            var dinamicObj = new GameObject("---Dynamic Objects---").transform;
-            var colliders = new GameObject("---Colliders---").transform;
+            var staticObj = new GameObject("---Enviroment---").transform;
+            var dinamicObj = new GameObject("---Interactable---").transform;
+            var audioObj = new GameObject("---Sound---").transform;
             var timelines = new GameObject("---Timelines---").transform;
         }
 
+        [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Folder Catalog #f")]
         public static void FolderCreate()
         {
             Debug.Log("<color=blue>Kinogoblin Editor</color> Create folder catalog");
-            if (!Directory.Exists("Assets/_Kinogoblin"))
+            string path = "Assets / __Project__";
+
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory("Assets/_Kinogoblin");
+                Directory.CreateDirectory(path);
             }
-            Directory.CreateDirectory("Assets/_Kinogoblin/Animations");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Animations/Timelines");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Editor");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Animations/AnimationClips");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Audio");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Models");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Materials");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Prefabs");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Scripts");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Scripts/Managers");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Scenes");
-            Directory.CreateDirectory("Assets/_Kinogoblin/Trash");
+            Directory.CreateDirectory(path + "/Materials");
+            Directory.CreateDirectory(path + "/Prefabs");
+            Directory.CreateDirectory(path + "/Scripts");
+            Directory.CreateDirectory(path + "/Scenes");
+            Directory.CreateDirectory(path + "/Trash");
+            Directory.CreateDirectory(path + "/Animations");
+            Directory.CreateDirectory(path + "/Animations/AnimationClips");
+            Directory.CreateDirectory(path + "/Animations/Timelines");
+            Directory.CreateDirectory(path + "/Editor");
+            Directory.CreateDirectory(path + "/Audio");
+            Directory.CreateDirectory(path + "/Models");
+            Directory.CreateDirectory(path + "/Materials/Textures");
+            Directory.CreateDirectory(path + "/Materials/Shaders");
+            AssetDatabase.Refresh();
+        }
+
+        public static void FolderCreate(bool small)
+        {
+            Debug.Log("<color=blue>Kinogoblin Editor</color> Create folder catalog");
+            string path = "Assets / __Project__";
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            Directory.CreateDirectory(path + "/Materials");
+            Directory.CreateDirectory(path + "/Prefabs");
+            Directory.CreateDirectory(path + "/Scripts");
+            Directory.CreateDirectory(path + "/Scenes");
+            Directory.CreateDirectory(path + "/Trash");
+            if (!small)
+            {
+                Directory.CreateDirectory(path + "/Animations");
+                Directory.CreateDirectory(path + "/Animations/AnimationClips");
+                Directory.CreateDirectory(path + "/Animations/Timelines");
+                Directory.CreateDirectory(path + "/Editor");
+                Directory.CreateDirectory(path + "/Audio");
+                Directory.CreateDirectory(path + "/Models");
+                Directory.CreateDirectory(path + "/Materials/Textures");
+                Directory.CreateDirectory(path + "/Materials/Shaders");
+            }
             AssetDatabase.Refresh();
         }
 
@@ -863,7 +903,6 @@
             Directory.CreateDirectory(path + "/Trash");
             if (!small)
             {
-
                 Directory.CreateDirectory(path + "/Animations");
                 Directory.CreateDirectory(path + "/Animations/Timelines");
                 Directory.CreateDirectory(path + "/Editor");
@@ -949,7 +988,7 @@
             if (gameObject != null && gameObject.name.StartsWith("---", System.StringComparison.Ordinal))
             {
 
-                EditorGUI.DrawRect(selectionRect, new Color(0.5f, 0, 1));
+                EditorGUI.DrawRect(selectionRect, EditorSettings.hierarchyColor);
                 EditorGUI.DropShadowLabel(selectionRect, gameObject.name.Replace("-", "").ToUpperInvariant());
             }
         }
