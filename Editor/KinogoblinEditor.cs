@@ -65,7 +65,7 @@
             EditorGUILayout.EndScrollView();
         }
 
-        [SerializeField] MultiSceneLoader[] custom = null;
+        [SerializeField] MultiSceneLoader[] custom = new MultiSceneLoader[] { };
 
         public void MultiSceneLoaderGUI()
         {

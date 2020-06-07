@@ -6,10 +6,10 @@ namespace Kinogoblin
 {
     public static class LayoutLoader
 	{
-		static string layoutPath = EditorUtilities.packagePathRoot + "/Editor/Module.Layout/LayoutConfigs/Kinogoblin.wlt";
+		static string layoutPath = EditorUtilities.packagePathRoot + "/Editor/Modules/Module.Layout/LayoutConfigs/Kinogoblin.wlt";
 
 		[MenuItem("Tools/Kinogoblin tools/Load Kinogoblin Layout", false, -1)]
-		public static void LoadFilmLayout()
+		public static void LoadKinogoblinLayout()
 		{
 			if (System.IO.File.Exists(layoutPath))
 			{

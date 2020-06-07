@@ -64,7 +64,6 @@ namespace Kinogoblin
             return newname;
         }
 
-
         public static string[] GetName(string name, char symbol)
         {
             string[] newname = null;

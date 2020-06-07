@@ -12,8 +12,8 @@ namespace Kinogoblin
 
         public static Color hierarchyColor = new Color(0.5f, 0, 1);
 
-        public GUIStyle buttonStyle;
-        public readonly static GUILayoutOption headerHeight = GUILayout.Height(25);
+        public static GUIStyle buttonStyle;
+        public static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
         public static GUIStyle headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
 
         public static void OtherGUI()
@@ -32,6 +32,9 @@ namespace Kinogoblin
             if (GUILayout.Button("Test Debug color"))
                 Helpful.Debug("Hello from Kinogoblin!");
 
+            GUILayout.Space(10f);
+            if (GUILayout.Button("Load Kinogoblin layout", buttonStyle, headerHeight))
+                LayoutLoader.LoadKinogoblinLayout();
         }
     }
 #if UNITY_EDITOR
