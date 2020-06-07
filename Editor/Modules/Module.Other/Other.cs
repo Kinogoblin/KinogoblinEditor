@@ -33,7 +33,8 @@ namespace Kinogoblin
                 Helpful.Debug("Hello from Kinogoblin!");
 
             GUILayout.Space(10f);
-            if (GUILayout.Button("Load Kinogoblin layout", buttonStyle, headerHeight))
+
+            if (GUILayout.Button("Load Kinogoblin layout"))
                 LayoutLoader.LoadKinogoblinLayout();
         }
     }
