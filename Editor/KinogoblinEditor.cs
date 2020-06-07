@@ -19,17 +19,22 @@
     {
         [MenuItem("Tools/Kinogoblin tools/Set Settings Window #w")]
 
+
         public static void ShowWindow()
         {
             GetWindow(typeof(EditorSettings));
         }
 
         private TypesOfSettings type;
-
         private Vector2 scrollPos = Vector2.zero;
 
         void OnGUI()
         {
+            titleContent = new GUIContent("Kinogoblin Editor", m_Logo);
+
+            Rect graphPosition = new Rect(0f, 0f, position.width, position.height);
+            GraphBackground.DrawGraphBackground(graphPosition, graphPosition);
+
             GUILayout.Space(10f);
 
             GUILayout.Box("KINOGOBLIN EDITOR", Other.headerStyle, GUILayout.ExpandWidth(true), Other.headerHeight);
@@ -64,6 +69,31 @@
             }
             EditorGUILayout.EndScrollView();
         }
+
+        ////////////////////
+        ///Temp
+        static string logoPath = EditorUtilities.packagePathRoot + "/Editor/Icons/Logo.png";
+
+        private static Texture2D m_Logo = null;
+        void OnEnable()
+        {
+            if (!File.Exists(logoPath))
+            {
+                logoPath = Application.dataPath + "/GitKinogoblin/KinogoblinEditor/Editor/Icons/Logo.png";
+            }
+            if (File.Exists(logoPath))
+            {
+                Helpful.Debug(logoPath);
+            }
+            m_Logo = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
+            var b = File.ReadAllBytes(logoPath);
+            m_Logo.LoadImage(b);
+            m_Logo.Apply();
+        }
+        
+        /// <summary>
+        /// To do change location for multi scene
+        /// </summary>
 
         [SerializeField] MultiSceneLoader[] custom = new MultiSceneLoader[] { };
 
