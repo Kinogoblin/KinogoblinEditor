@@ -17,12 +17,10 @@
 
     class EditorSettings : EditorWindow
     {
-        [MenuItem("Tools/Kinogoblin tools/Set Settings Window #w")]
-
-
+        [MenuItem("Tools/Kinogoblin tools/Set Settings Window #w", false, -100)]
         public static void ShowWindow()
         {
-            GetWindow(typeof(EditorSettings));
+            var window = EditorWindow.GetWindow<EditorSettings>();
         }
 
         private TypesOfSettings type;
@@ -30,7 +28,7 @@
 
         void OnGUI()
         {
-            titleContent = new GUIContent("Kinogoblin Editor", m_Logo);
+            titleContent = new GUIContent("K. Editor", m_Logo);
 
             Rect graphPosition = new Rect(0f, 0f, position.width, position.height);
             GraphBackground.DrawGraphBackground(graphPosition, graphPosition);
