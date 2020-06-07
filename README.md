@@ -1,2 +1,2 @@
 # KinogoblinEditor
-Help functions for Unity
+Helpful functions for Unity
