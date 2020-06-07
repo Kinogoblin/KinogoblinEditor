@@ -16,6 +16,8 @@ namespace Kinogoblin
         public static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
         public static GUIStyle headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
 
+        public static bool customView = true;
+
         public static void OtherGUI()
         {
 
@@ -36,6 +38,10 @@ namespace Kinogoblin
 
             if (GUILayout.Button("Load Kinogoblin layout"))
                 LayoutLoader.LoadKinogoblinLayout();
+
+            GUILayout.Space(10f);
+
+            customView = EditorGUILayout.Toggle("Custom View",customView);
         }
     }
 #if UNITY_EDITOR
