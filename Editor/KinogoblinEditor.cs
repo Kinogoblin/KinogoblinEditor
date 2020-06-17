@@ -71,12 +71,11 @@
 
         ////////////////////
         ///Temp
-        static string logoPath = EditorUtilities.packagePathRoot + "/Editor/Icons/Logo.png";
+        static string logoPath = "Packages/com.kinogoblin.editor/Editor/Icons/Logo.png";
 
         private static Texture2D m_Logo = null;
         void OnEnable()
         {
-            Helpful.Debug(logoPath);
             if (!File.Exists(logoPath))
             {
                 logoPath = Application.dataPath + "/GitKinogoblin/KinogoblinEditor/Editor/Icons/Logo.png";
