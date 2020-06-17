@@ -1,10 +1,10 @@
 {
-	"name": "com.unity.kinogoblin",
+	"name": "com.kinogoblin.editor",
 	"displayName": "Kinogoblin Editor",
 	"version": "1.10.1",
 	"unity": "2019.3",
 	"description": "CustomEditor",
-	"keywords": [ "custom", "editor", "folder", "materials", "pivote"],
+	"keywords": [ "custom", "editor", "folder", "materials", "pivote","layout"],
 	"category": "editor",
 	"samples": [
     {
