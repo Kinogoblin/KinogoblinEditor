@@ -71,7 +71,7 @@
 
         ////////////////////
         ///Temp
-        static string logoPath = "Packages/com.kinogoblin.editor/Editor/Icons/Logo.png";
+        static string logoPath = EditorUtilities.packagePathRoot + "/Editor/Icons/Logo.png";
 
         private static Texture2D m_Logo = null;
         void OnEnable()

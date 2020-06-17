@@ -41,7 +41,7 @@ namespace Kinogoblin
         /// <summary>
         /// Root path to our package
         /// </summary>
-        public static string packagePathRoot = "Packages/com.unity.kinogoblin";
+        public static string packagePathRoot = "Packages/com.kinogoblin.editor";
 
 #if UNITY_EDITOR
         /// <summary>
