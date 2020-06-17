@@ -5,38 +5,6 @@
 	"unity": "2019.3",
 	"description": "CustomEditor",
 	"keywords": [ "custom", "editor", "folder", "materials", "pivote","layout"],
-	"category": "editor",
-	"samples": [
-    {
-      "displayName": "FodPlayable",
-      "description": "FodPlayable.",
-      "path": "Samples~/FodPlayable"
-    },
-    {
-      "displayName": "InstancePrefabPlayable",
-      "description": "InstancePrefabPlayable.",
-      "path": "Samples~/InstancePrefabPlayable"
-    },
-    {
-      "displayName": "MaterialsPlayable",
-      "description": "MaterialsPlayable.",
-      "path": "Samples~/MaterialsPlayable"
-    },
-    {
-      "displayName": "PostProcessingPlayable",
-      "description": "PostProcessingPlayable.",
-      "path": "Samples~/PostProcessingPlayable"
-    },
-    {
-      "displayName": "SceneAdditiveLoader",
-      "description": "SceneAdditiveLoader.",
-      "path": "Samples~/SceneAdditiveLoader"
-    },
-    {
-      "displayName": "SkyBoxPlayable",
-      "description": "SkyBoxPlayable.",
-      "path": "Samples~/SkyBoxPlayable"
-    }
-  ]
+	"category": "editor"
 }
 
