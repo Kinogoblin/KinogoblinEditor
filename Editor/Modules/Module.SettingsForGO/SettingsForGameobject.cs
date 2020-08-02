@@ -331,7 +331,7 @@ namespace Kinogoblin
             if (buttonStyle == null)
             {
                 buttonStyle = new GUIStyle(GUI.skin.button) { richText = true };
-                headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
+                headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
             }
 
 

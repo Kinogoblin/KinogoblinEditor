@@ -7,21 +7,29 @@ namespace Kinogoblin
 {
     public class Helpful
     {
-        public static Color debugColor = new Color(0.5f, 0, 1);
 
-        public static void Debug(string message,string normal)
+        public static void Debug(string message, string normal)
         {
-            UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(debugColor.r * 255f), (byte)(debugColor.g * 255f), (byte)(debugColor.b * 255f), message) + normal);
+            if (Other.debugSend)
+            {
+                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message) + normal);
+            }
         }
 
         public static void Debug(string message)
         {
-            UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(debugColor.r * 255f), (byte)(debugColor.g * 255f), (byte)(debugColor.b * 255f), message));
+            if(Other.debugSend)
+            {
+                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message));
+            }
         }
 
-        public static void Debug( string message,Color color)
+        public static void Debug(string message, Color color)
         {
-            UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(color.r * 255f), (byte)(color.g* 255f), (byte)(color.b * 255f), message));
+            if (Other.debugSend)
+            {
+                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(color.r * 255f), (byte)(color.g * 255f), (byte)(color.b * 255f), message));
+            }
         }
 
         public static string CustomString(string message, Color color)
@@ -30,7 +38,7 @@ namespace Kinogoblin
         }
         public static string CustomString(string message)
         {
-            return string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(debugColor.r * 255f), (byte)(debugColor.g * 255f), (byte)(debugColor.b * 255f), message);
+            return string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message);
         }
 
         public static void GetListOfAllChilds(Transform parent, List<Transform> list)

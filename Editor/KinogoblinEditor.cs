@@ -1,6 +1,6 @@
 ﻿namespace Kinogoblin
 {
-    //Version 1.10
+    //Version 1.11
     using UnityEngine;
     using UnityEditor;
     using System;
@@ -12,7 +12,7 @@
         SettingsForGameobject,
         ChangeMaterial,
         MultiSceneLoader,
-        Other
+        Custom
     }
 
     class EditorSettings : EditorWindow
@@ -25,9 +25,20 @@
 
         private TypesOfSettings type;
         private Vector2 scrollPos = Vector2.zero;
+        private string[] varaints = new string[0];
+        private int selectedVariant = 0;
+
         void OnGUI()
         {
             titleContent = new GUIContent("K. Editor", m_Logo);
+            if(varaints.Length == 0)
+            {
+                varaints = new string[5];
+                for (int i = 0; i < 5; i++)
+                {
+                    varaints[i] = ((TypesOfSettings)i).ToString();
+                }
+            }
             if (Other.customView)
             {
                 Rect graphPosition = new Rect(0f, 0f, position.width, position.height);
@@ -38,10 +49,18 @@
 
             GUILayout.Box("KINOGOBLIN EDITOR", Other.headerStyle, GUILayout.ExpandWidth(true), Other.headerHeight);
 
-            type = (TypesOfSettings)EditorGUILayout.EnumPopup("Primitive to create:", type);
+            EditorGUILayout.BeginHorizontal();
+            
+            EditorGUILayout.BeginVertical("box",GUILayout.MaxWidth(150),GUILayout.ExpandHeight(true));
+
+            
+
+            type = (TypesOfSettings)GUILayout.SelectionGrid((int)type, varaints, 1);
+
+            EditorGUILayout.EndVertical();
 
 
-            GUILayout.Space(10f);
+            EditorGUILayout.BeginVertical("box", GUILayout.ExpandHeight(true));
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
@@ -59,36 +78,47 @@
                 case TypesOfSettings.MultiSceneLoader:
                     MultiSceneLoaderGUI();
                     break;
-                case TypesOfSettings.Other:
+                case TypesOfSettings.Custom:
                     Other.OtherGUI();
                     break;
                 default:
                     ChangeMaterial.ChangeMaterialGUI();
                     break;
             }
+
             EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
+            
         }
 
         ////////////////////
         ///Temp
-        static string logoPath = EditorUtilities.packagePathRoot + "/Editor/Icons/Logo.png";
+        static string logoPath = "Packages/com.kinogoblin.editor/Editor/Icons/Logo.png";
 
+        public static string settingsPath = "Packages/com.kinogoblin.editor/Editor/Data/Editor Data.asset";
         private static Texture2D m_Logo = null;
         void OnEnable()
         {
-            if (!File.Exists(logoPath))
+            if (AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D)) == null)
             {
-                logoPath = Application.dataPath + "/GitKinogoblin/KinogoblinEditor/Editor/Icons/Logo.png";
+                logoPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Icons/Logo.png";
             }
             m_Logo = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
-            var b = File.ReadAllBytes(logoPath);
-            m_Logo.LoadImage(b);
+            m_Logo = (Texture2D)AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
             m_Logo.Apply();
         }
         
-        /// <summary>
-        /// To do change location for multi scene
-        /// </summary>
+        public static SaveSettings GetSettings()
+        {
+            if (AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings)) == null)
+            {
+                settingsPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Data/Editor Data.asset";
+            }
+            var s = (SaveSettings)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings));
+
+            return s;
+        }
 
         [SerializeField] MultiSceneLoader[] custom = new MultiSceneLoader[] { };
 

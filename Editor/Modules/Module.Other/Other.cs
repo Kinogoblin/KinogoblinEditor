@@ -9,6 +9,19 @@ namespace Kinogoblin
 
     public class Other
     {
+        public static SaveSettings settings
+        {
+            get
+            {
+                if (_dataSettings == null)
+                {
+                    _dataSettings = EditorSettings.GetSettings();
+                }
+                return _dataSettings;
+            }
+        }
+        private static SaveSettings _dataSettings;
+
 
         public static Color hierarchyColor = new Color(0.5f, 0, 1);
 
@@ -17,19 +30,26 @@ namespace Kinogoblin
         public static GUIStyle headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
 
         public static bool customView = true;
+        public static bool debugSend = true;
 
         public static void OtherGUI()
         {
 
+            ScriptableObject scriptableObj = settings;
+            SerializedObject serialObj = new SerializedObject(scriptableObj);
+            SerializedProperty serialProp = serialObj.FindProperty("customHierarchy");
+
+            ///////////////
             GUILayout.Box("COLOR SETTINGS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
             GUILayout.Space(10f);
 
-            hierarchyColor = EditorGUILayout.ColorField("Color divisions", hierarchyColor);
+            EditorGUILayout.PropertyField(serialProp, true);
+            serialObj.ApplyModifiedProperties();
 
             GUILayout.Space(10f);
 
-            Helpful.debugColor = EditorGUILayout.ColorField("Color debug", Helpful.debugColor);
+            settings.debugColor = EditorGUILayout.ColorField("Color debug", settings.debugColor);
 
             if (GUILayout.Button("Test Debug color"))
                 Helpful.Debug("Hello from Kinogoblin!");
@@ -41,7 +61,8 @@ namespace Kinogoblin
 
             GUILayout.Space(10f);
 
-            customView = EditorGUILayout.Toggle("Custom View",customView);
+            settings.customView = EditorGUILayout.Toggle("Custom View", settings.customView);
+            settings.debugSend = EditorGUILayout.Toggle("Debug send", settings.debugSend);
         }
     }
 #if UNITY_EDITOR
@@ -92,13 +113,19 @@ namespace Kinogoblin
         static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-
-            if (gameObject != null && gameObject.name.StartsWith("---", System.StringComparison.Ordinal))
+            if (gameObject != null && Other.settings.customizeHierarchy)
             {
-
-                EditorGUI.DrawRect(selectionRect, Other.hierarchyColor);
-                EditorGUI.DropShadowLabel(selectionRect, gameObject.name.Replace("-", "").ToUpperInvariant());
+                foreach (var item in Other.settings.customHierarchy)
+                {
+                    if (gameObject.name.StartsWith(item.prefix, System.StringComparison.Ordinal) && item.prefix != "")
+                    {
+                        EditorGUI.DrawRect(selectionRect, item.color);
+                        EditorGUI.DropShadowLabel(selectionRect, gameObject.name.Replace(item.prefix, "").ToUpperInvariant(), item.style);
+                        return;
+                    }
+                }
             }
+
         }
     }
 #endif

@@ -39,13 +39,13 @@ namespace Kinogoblin
         public static void SceneCreate()
         {
             Helpful.Debug("Kinogoblin Editor ", " Create scene catalog");
-            var cameraObj = new GameObject("---Player---").transform;
-            var scriptObj = new GameObject("---Managers---").transform;
-            var lightObj = new GameObject("---Light---").transform;
-            var staticObj = new GameObject("---Enviroment---").transform;
-            var dinamicObj = new GameObject("---Interactable---").transform;
-            var audioObj = new GameObject("---Sound---").transform;
-            var timelines = new GameObject("---Timelines---").transform;
+            var cameraObj = new GameObject("p--Player").transform;
+            var scriptObj = new GameObject("m--Managers").transform;
+            var lightObj = new GameObject("l--Light").transform;
+            var staticObj = new GameObject("e--Enviroment").transform;
+            var dinamicObj = new GameObject("i--Interactable").transform;
+            var audioObj = new GameObject("s--Sound").transform;
+            var timelines = new GameObject("t--Timelines").transform;
         }
 
         [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Folder Catalog #f")]
@@ -60,6 +60,7 @@ namespace Kinogoblin
             }
             Directory.CreateDirectory(path + "/Materials");
             Directory.CreateDirectory(path + "/Prefabs");
+            Directory.CreateDirectory(path + "/Data");
             Directory.CreateDirectory(path + "/Scripts");
             Directory.CreateDirectory(path + "/Scenes");
             Directory.CreateDirectory(path + "/Trash");
