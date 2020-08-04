@@ -569,3 +569,4 @@ MonoBehaviour:
   debugColor: {r: 0.5019608, g: 0, b: 1, a: 0}
   customView: 1
   debugSend: 1
+  pathForModels: Assets/__Project__/Models/MeshAssets/

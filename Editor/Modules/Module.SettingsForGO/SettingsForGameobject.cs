@@ -201,7 +201,19 @@ namespace Kinogoblin
             pivot.localRotation = Quaternion.identity;
         }
 
-        private static void SaveMesh(MeshFilter meshFilter,string name, bool saveAsAsset)
+        public static string pathCustom
+        {
+            get 
+            { 
+                return Other.settings.pathForModels;
+            }
+            set
+            {
+                Other.settings.pathForModels = value;
+            }
+        }
+
+        private static void SaveMesh(MeshFilter meshFilter, string name, bool saveAsAsset)
         {
             if (IsPrefab(meshFilter))
             {
@@ -213,7 +225,7 @@ namespace Kinogoblin
             while (savedMeshName.EndsWith("(Clone)"))
                 savedMeshName = savedMeshName.Substring(0, savedMeshName.Length - 7);
 
-            string savePath = pathCustom + name +"_"+ savedMeshName + "." + (saveAsAsset ? "asset" : "obj");
+            string savePath = pathCustom + name + "_" + savedMeshName + "." + (saveAsAsset ? "asset" : "obj");
             if (string.IsNullOrEmpty(savePath))
                 return;
             Helpful.Debug(savePath);
@@ -310,8 +322,6 @@ namespace Kinogoblin
         /// //////////////////////
         /// 
 
-        static string pathCustom = "Assets/__Project__/Models/MeshAssets/";
-
         public static void SettingsForGameobjectGUI()
         {
 
@@ -394,7 +404,7 @@ namespace Kinogoblin
                         pathCustom = "";
                         for (int j = i; j < tempPath.Length; j++)
                         {
-                            pathCustom += tempPath[j]+"/";
+                            pathCustom += tempPath[j] + "/";
                         }
                         continue;
                     }
@@ -461,7 +471,7 @@ namespace Kinogoblin
                         MeshFilter meshFilterGO = Selection.gameObjects[i].GetComponent<MeshFilter>();
                         if (!IsNull(meshFilterGO) && !IsNull(meshFilterGO.sharedMesh))
                         {
-                            SaveMesh(meshFilterGO, Selection.gameObjects[i].name+""+i, true);
+                            SaveMesh(meshFilterGO, Selection.gameObjects[i].name + "" + i, true);
                         }
                     }
                 }
