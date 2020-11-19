@@ -69,7 +69,7 @@ namespace Kinogoblin
             createNavMeshObstacleObjectOnPivotChange = EditorPrefs.GetBool("AdjustPivotCreateNavMeshObstacle", false);
         }
 
-        private static void SetParentPivot(Transform pivot)
+        private static void SetParentPivot(Transform pivot, bool saveRotation)
         {
             Transform pivotParent = pivot.parent;
             if (IsPrefab(pivotParent))
@@ -105,7 +105,7 @@ namespace Kinogoblin
                         vertices[i] += deltaPosition;
                 }
 
-                if (pivot.localEulerAngles != Vector3.zero)
+                if (pivot.localEulerAngles != Vector3.zero && !saveRotation)
                 {
                     Quaternion deltaRotation = Quaternion.Inverse(pivot.localRotation);
                     for (int i = 0; i < vertices.Length; i++)
@@ -189,7 +189,8 @@ namespace Kinogoblin
 
             Undo.RecordObject(pivotParent, UNDO_ADJUST_PIVOT);
             pivotParent.position = pivot.position;
-            pivotParent.rotation = pivot.rotation;
+            if (!saveRotation)
+                pivotParent.rotation = pivot.rotation;
 
             for (int i = 0; i < children.Length; i++)
             {
@@ -203,8 +204,8 @@ namespace Kinogoblin
 
         public static string pathCustom
         {
-            get 
-            { 
+            get
+            {
                 return Other.settings.pathForModels;
             }
             set
@@ -354,11 +355,14 @@ namespace Kinogoblin
                 {
                     if (selection.localPosition != Vector3.zero || selection.localEulerAngles != Vector3.zero)
                     {
-                        if (GUILayout.Button("Move <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
-                            SetParentPivot(selection);
+                        if (GUILayout.Button("Move and rotate <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
+                            SetParentPivot(selection,false);
 
                         if (selection.localEulerAngles != Vector3.zero)
                             EditorGUILayout.HelpBox("Pivot will also be rotated to match " + selection.name + "'s rotation.", MessageType.None);
+                        
+                        if (GUILayout.Button("Move <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
+                            SetParentPivot(selection, true);
                     }
                     else
                     {
@@ -388,7 +392,7 @@ namespace Kinogoblin
             GUILayout.Space(5f);
 
             GUILayout.Label("Custom path " + pathCustom);
-            
+
             if (GUILayout.Button("Set default path", buttonStyle, buttonHeight))
             {
                 pathCustom = "Assets/__Project__/Models/MeshAssets/";
