@@ -388,7 +388,12 @@ namespace Kinogoblin
             GUILayout.Space(5f);
 
             GUILayout.Label("Custom path " + pathCustom);
-
+            
+            if (GUILayout.Button("Set default path", buttonStyle, buttonHeight))
+            {
+                pathCustom = "Assets/__Project__/Models/MeshAssets/";
+                Helpful.Debug(pathCustom);
+            }
             if (GUILayout.Button("Save custom path", buttonStyle, buttonHeight))
             {
                 var temp = pathCustom;
