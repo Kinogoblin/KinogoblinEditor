@@ -9,25 +9,13 @@
 <key>kind</key>
 <string>software-package</string>
 <key>url</key>
-<string>https://www.dropbox.com/s/zt9zb1hpolwma7q/AkivaLearning.ipa?dl=1</string>
-</dict>
-<dict>
-<key>kind</key>
-<string>display-image</string>
-<key>url</key>
-<string>https://www.cv.e1.by2.by/app/cv_small.png</string>
-</dict>
-<dict>
-<key>kind</key>
-<string>full-size-image</string>
-<key>url</key>
-<string>https://www.cv.e1.by2.by/app/cv_large.png</string>
+<string>https://www.dropbox.com/s/nk1d24sund9bam5/ZhilkomStandAR.ipa?dl=1</string>
 </dict>
 </array>
 <key>metadata</key>
 <dict>
 <key>bundle-identifier</key>
-<string>com.FeelingDigital.AkivaLearning</string>
+<string>com.FeelingDigital.ZhilkomStandAR</string>
 <key>bundle-version</key>
 <string>0.1.2</string>
 <key>kind</key>
@@ -35,7 +23,7 @@
 <key>platform-identifier</key>
 <string>com.apple.platform.iphoneos</string>
 <key>title</key>
-<string>Under the pillow</string>
+<string>ZhilkomStandAR</string>
 </dict>
 </dict>
 </array>
