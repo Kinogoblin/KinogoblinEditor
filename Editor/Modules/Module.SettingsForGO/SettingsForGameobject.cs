@@ -19,6 +19,8 @@ namespace Kinogoblin
         private static string UNDO_ADJUST_PIVOT = "Move Pivot";
         private static string UNDO_SAVE_MODEL_AS = "Save Model As";
 
+        private static bool auroSaveChangedMesh = true;
+
         private static bool createColliderObjectOnPivotChange = false;
         private static bool createNavMeshObstacleObjectOnPivotChange = false;
 
@@ -200,6 +202,15 @@ namespace Kinogoblin
 
             pivot.localPosition = Vector3.zero;
             pivot.localRotation = Quaternion.identity;
+            if (auroSaveChangedMesh)
+            {
+                MeshFilter meshFilterParent = pivotParent.GetComponent<MeshFilter>();
+                if (!Directory.Exists(pathCustom))
+                {
+                    Directory.CreateDirectory(pathCustom);
+                }
+                SaveMesh(meshFilterParent, pivotParent.name, true);
+            }
         }
 
         public static string pathCustom
@@ -384,6 +395,10 @@ namespace Kinogoblin
                 GUILayout.Button("Nothing is selected", buttonStyle, buttonHeight);
                 GUI.enabled = true;
             }
+
+            GUILayout.Space(15f);
+
+            auroSaveChangedMesh = EditorGUILayout.ToggleLeft("AutoSave Mesh", auroSaveChangedMesh);
 
             GUILayout.Space(15f);
 
