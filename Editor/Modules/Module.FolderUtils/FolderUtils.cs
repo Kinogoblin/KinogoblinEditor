@@ -35,7 +35,7 @@ namespace Kinogoblin
     }
     static class CreateProjectsComponents
     {
-        [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Scene Catalog #s")]
+        [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Scene Catalog")]
         public static void SceneCreate()
         {
             Helpful.Debug("Kinogoblin Editor ", " Create scene catalog");
