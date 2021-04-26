@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 namespace Kinogoblin
 {
@@ -61,9 +62,79 @@ namespace Kinogoblin
 
             GUILayout.Space(10f);
 
+            if (GUILayout.Button("Cleanup Missing Scripts"))
+                CleanupMissingScripts();
+                
+            GUILayout.Space(10f);
+
             settings.customView = EditorGUILayout.Toggle("Custom View", settings.customView);
             settings.debugSend = EditorGUILayout.Toggle("Debug send", settings.debugSend);
         }
+
+        #if UNITY_2019_1_OR_NEWER
+
+        [MenuItem("Tools/Kinogoblin tools/Cleanup Missing Scripts")]
+        static void CleanupMissingScripts()
+        {
+            int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
+
+            for (int a = 0; a < UnityEngine.SceneManagement.SceneManager.sceneCount; a++)
+            {
+
+                var scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(a);
+
+                var rootGameObjects = scene.GetRootGameObjects();
+
+                if (rootGameObjects != null && rootGameObjects.Length > 0)
+                {
+
+                    List<GameObject> allObjectsinScene = new List<GameObject>();
+
+
+                    EditorUtility.DisplayProgressBar("Preprocessing", $"Fetching GameObjects in active scene \"{scene.name}\"", 0);
+
+                    foreach (var gameObject in rootGameObjects)
+                    {
+                        var childObjects = gameObject.GetComponentsInChildren<Transform>();
+
+                        if (childObjects != null && childObjects.Length > 0)
+                        {
+                            foreach (var obj in childObjects)
+                            {
+                                if (obj != null) { allObjectsinScene.Add(obj.gameObject); }
+                            }
+                        }
+
+                    }
+
+                    EditorUtility.ClearProgressBar();
+
+
+                    for (int b = 0; b < allObjectsinScene.Count; b++)
+                    {
+
+                        var gameObject = allObjectsinScene[b];
+
+                        EditorUtility.DisplayProgressBar("Removing missing script references", $"Inspecting GameObject  {b + 1}/{allObjectsinScene.Count} in active scene \"{scene.name}\"", (float)(b) / allObjectsinScene.Count);
+
+                        GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gameObject);
+                    }
+
+                    EditorSceneManager.MarkSceneDirty(scene);
+
+                    EditorUtility.ClearProgressBar();
+                }
+
+                EditorUtility.ClearProgressBar();
+            }
+
+            EditorUtility.ClearProgressBar();
+
+            EditorUtility.DisplayDialog("Operation Completed", "Successfully removed missing script references. Please save all currently open scenes to keep these changes persistent", "Ok");
+
+        }
+
+#endif 
     }
 #if UNITY_EDITOR
     public class EditorExtensions
