@@ -17,6 +17,7 @@ namespace Kinogoblin
         public bool customView = true;
         public bool debugSend = true;
         public string pathForModels = "Assets/__Project__/Models/MeshAssets/";
+        public string pathForMaterials = "Assets/__Project__/Materials/";
 
     }
 

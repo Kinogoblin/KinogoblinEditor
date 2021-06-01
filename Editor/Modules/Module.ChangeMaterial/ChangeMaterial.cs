@@ -12,8 +12,33 @@ namespace Kinogoblin
 
         private static Material checkedMaterial = null;
 
+        private static GUIStyle buttonStyle;
+        private static GUIStyle headerStyle;
+        private static readonly GUILayoutOption buttonHeight = GUILayout.Height(30);
+        private static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
+
+        public static string pathCustom
+        {
+            get
+            {
+                return Other.settings.pathForMaterials;
+            }
+            set
+            {
+                Other.settings.pathForMaterials = value;
+            }
+        }
+
         public static void ChangeMaterialGUI()
         {
+            if (buttonStyle == null)
+            {
+                buttonStyle = new GUIStyle(GUI.skin.button) { richText = true };
+                headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
+            }
+
+            GUILayout.Box("SETTINGS FOR GO", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
             GUILayout.Label("Base settings for new material", EditorStyles.boldLabel);
             GUILayout.Space(10f);
 
@@ -45,6 +70,76 @@ namespace Kinogoblin
                 Helpful.Debug("Kinogoblin Editor ", "Set new material");
                 SetMaterialButton.SetMaterialNew();
             }
+
+            GUILayout.Box("MATERIAL SAVER FROM OBJECTS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            GUILayout.Space(5f);
+
+            GUILayout.Label("Custom path " + pathCustom);
+
+            if (GUILayout.Button("Set default path", buttonStyle, buttonHeight))
+            {
+                pathCustom = "Assets/__Project__/Materials/";
+                Helpful.Debug(pathCustom);
+            }
+            if (GUILayout.Button("Save custom path", buttonStyle, buttonHeight))
+            {
+                var temp = pathCustom;
+                pathCustom = EditorUtility.SaveFolderPanel("Save custom path", "", string.Empty);
+                int i = 0;
+                bool normalPath = false;
+                string[] tempPath = Helpful.GetName(pathCustom, '/');
+                foreach (var item in tempPath)
+                {
+                    if (item.Contains("Assets"))
+                    {
+                        normalPath = true;
+                        pathCustom = "";
+                        for (int j = i; j < tempPath.Length; j++)
+                        {
+                            pathCustom += tempPath[j] + "/";
+                        }
+                        continue;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                if (!normalPath)
+                {
+                    Helpful.Debug("Find path in project!!!");
+                    pathCustom = temp;
+                }
+                else
+                {
+                    Helpful.Debug(pathCustom);
+                }
+            }
+
+            Transform selection = Selection.activeTransform;
+
+            if (!IsNull(selection))
+            {
+                if (GUILayout.Button("Copy and save <b>" + selection.name + "</b>'s materials!", buttonStyle, buttonHeight))
+                {
+                    var pathWithName = pathCustom + "/" + selection.name + "/";
+                    if (!Directory.Exists(pathWithName))
+                    {
+                        Directory.CreateDirectory(pathWithName);
+                    }
+                    SaveMaterialButton.SaveMaterialFromGameObject(pathWithName, selection);
+                }
+
+                GUILayout.Space(5f);
+            }
+            else
+            {
+                GUI.enabled = false;
+                GUILayout.Button("Selected object for save materials", buttonStyle, buttonHeight);
+                GUI.enabled = true;
+            }
+
         }
 
 
@@ -161,6 +256,36 @@ namespace Kinogoblin
                     }
                 }
             }
+        }
+
+        static class SaveMaterialButton
+        {
+            public static void SaveMaterialFromGameObject(string customPath, Transform activeTransform)
+            {
+                foreach (Transform child in activeTransform)
+                {
+                    if (!(child.GetComponent<Renderer>() == null))
+                    {
+                        List<Material> new_materials = new List<Material>() { };
+                        foreach (Material mat in child.GetComponent<Renderer>().sharedMaterials)
+                        {
+                            Material new_material = new Material(mat.shader);
+                            new_material.CopyPropertiesFromMaterial(mat);
+                            if (AssetDatabase.LoadAssetAtPath<Material>(customPath + mat.name + ".mat") == null)
+                            {
+                                AssetDatabase.CreateAsset(new_material, customPath + mat.name + ".mat");
+                            }
+                            new_materials.Add(AssetDatabase.LoadAssetAtPath<Material>(customPath + mat.name + ".mat"));
+                        }
+                        child.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
+                    }
+                }
+            }
+        }
+
+        private static bool IsNull(Object obj)
+        {
+            return obj == null || obj.Equals(null);
         }
     }
 }
