@@ -262,10 +262,33 @@ namespace Kinogoblin
         {
             public static void SaveMaterialFromGameObject(string customPath, Transform activeTransform)
             {
+                Debug.Log("Save Mat!");
+                if ( activeTransform.GetComponent<Renderer>() != null)
+                {
+                    Debug.Log("Save Mat! 1");
+                    List<Material> new_materials = new List<Material>() { };
+                    foreach (Material mat in activeTransform.GetComponent<Renderer>().sharedMaterials)
+                    {
+                        Material new_material = new Material(mat.shader);
+                        new_material.CopyPropertiesFromMaterial(mat);
+                        if (AssetDatabase.LoadAssetAtPath<Material>(customPath + mat.name + ".mat") == null)
+                        {
+                            AssetDatabase.CreateAsset(new_material, customPath + mat.name + ".mat");
+                        }
+                        new_materials.Add(AssetDatabase.LoadAssetAtPath<Material>(customPath + mat.name + ".mat"));
+                    }
+                    activeTransform.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
+                }
+                SaveMaterialsInChilds(customPath,activeTransform);
+            }
+
+            public static void SaveMaterialsInChilds(string customPath,Transform activeTransform)
+            {
                 foreach (Transform child in activeTransform)
                 {
-                    if (!(child.GetComponent<Renderer>() == null))
+                    if (child.GetComponent<Renderer>() != null)
                     {
+                        Debug.Log("Save Mat! 2");
                         List<Material> new_materials = new List<Material>() { };
                         foreach (Material mat in child.GetComponent<Renderer>().sharedMaterials)
                         {
@@ -279,7 +302,9 @@ namespace Kinogoblin
                         }
                         child.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
                     }
+                    SaveMaterialsInChilds(customPath,child);
                 }
+                
             }
         }
 

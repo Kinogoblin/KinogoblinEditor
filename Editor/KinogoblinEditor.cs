@@ -31,14 +31,15 @@
         void OnGUI()
         {
             titleContent = new GUIContent("K. Editor", m_Logo);
-            if(varaints.Length == 0)
+            if (varaints.Length == 0)
             {
                 varaints = new string[5];
                 for (int i = 0; i < 5; i++)
                 {
-                    varaints[i] = ((TypesOfSettings)i).ToString();
+                    varaints[i] = ((TypesOfSettings) i).ToString();
                 }
             }
+
             if (Other.customView)
             {
                 Rect graphPosition = new Rect(0f, 0f, position.width, position.height);
@@ -50,12 +51,11 @@
             GUILayout.Box("KINOGOBLIN EDITOR", Other.headerStyle, GUILayout.ExpandWidth(true), Other.headerHeight);
 
             EditorGUILayout.BeginHorizontal();
-            
-            EditorGUILayout.BeginVertical("box",GUILayout.MaxWidth(150),GUILayout.ExpandHeight(true));
 
-            
+            EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(150), GUILayout.ExpandHeight(true));
 
-            type = (TypesOfSettings)GUILayout.SelectionGrid((int)type, varaints, 1);
+
+            type = (TypesOfSettings) GUILayout.SelectionGrid((int) type, varaints, 1);
 
             EditorGUILayout.EndVertical();
 
@@ -89,7 +89,6 @@
             EditorGUILayout.EndScrollView();
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
-            
         }
 
         ////////////////////
@@ -98,24 +97,27 @@
 
         public static string settingsPath = "Packages/com.kinogoblin.editor/Editor/Data/Editor Data.asset";
         private static Texture2D m_Logo = null;
+
         void OnEnable()
         {
             if (AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D)) == null)
             {
                 logoPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Icons/Logo.png";
             }
+
             m_Logo = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
-            m_Logo = (Texture2D)AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
+            m_Logo = (Texture2D) AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
             m_Logo.Apply();
         }
-        
+
         public static SaveSettings GetSettings()
         {
             if (AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings)) == null)
             {
                 settingsPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Data/Editor Data.asset";
             }
-            var s = (SaveSettings)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings));
+
+            var s = (SaveSettings) AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings));
 
             return s;
         }
@@ -149,11 +151,10 @@
                         item.LoadSetScenes(true);
                 }
             }
-
         }
     }
 
-    public class CustomSceneLoader : ScriptableObject 
+    public class CustomSceneLoader : ScriptableObject
     {
         MultiSceneLoader multiSceneLoader = new MultiSceneLoader();
 
@@ -187,12 +188,6 @@
             EditorGUILayout.Space();
             if (GUILayout.Button("Load Set Scenes", GUILayout.MinHeight(100), GUILayout.Height(50)))
                 multiSceneLoader.LoadSetScenes(true);
-
         }
     }
-
-
-
-
-
 }
