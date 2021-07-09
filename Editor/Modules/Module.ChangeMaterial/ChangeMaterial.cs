@@ -232,7 +232,12 @@ namespace Kinogoblin
                         {
                             if (item.GetComponent<MeshRenderer>() != null)
                             {
-                                item.GetComponent<MeshRenderer>().material = mat;
+                                var mats = item.GetComponent<MeshRenderer>().materials;
+                                for (int i = 0; i < mats.Length; i++)
+                                {
+                                    mats[i] = mat;
+                                }
+                                item.GetComponent<MeshRenderer>().materials = mats;
                             }
                         }
                     }
@@ -252,7 +257,12 @@ namespace Kinogoblin
                 {
                     if (item.GetComponent<MeshRenderer>() != null)
                     {
-                        item.GetComponent<MeshRenderer>().material = mat;
+                        var mats = item.GetComponent<MeshRenderer>().materials;
+                        for (int i = 0; i < mats.Length; i++)
+                        {
+                            mats[i] = mat;
+                        }
+                        item.GetComponent<MeshRenderer>().materials = mats;
                     }
                 }
             }
@@ -263,7 +273,7 @@ namespace Kinogoblin
             public static void SaveMaterialFromGameObject(string customPath, Transform activeTransform)
             {
                 Debug.Log("Save Mat!");
-                if ( activeTransform.GetComponent<Renderer>() != null)
+                if (activeTransform.GetComponent<Renderer>() != null)
                 {
                     Debug.Log("Save Mat! 1");
                     List<Material> new_materials = new List<Material>() { };
@@ -279,10 +289,10 @@ namespace Kinogoblin
                     }
                     activeTransform.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
                 }
-                SaveMaterialsInChilds(customPath,activeTransform);
+                SaveMaterialsInChilds(customPath, activeTransform);
             }
 
-            public static void SaveMaterialsInChilds(string customPath,Transform activeTransform)
+            public static void SaveMaterialsInChilds(string customPath, Transform activeTransform)
             {
                 foreach (Transform child in activeTransform)
                 {
@@ -302,9 +312,9 @@ namespace Kinogoblin
                         }
                         child.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
                     }
-                    SaveMaterialsInChilds(customPath,child);
+                    SaveMaterialsInChilds(customPath, child);
                 }
-                
+
             }
         }
 
