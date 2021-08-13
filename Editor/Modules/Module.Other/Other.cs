@@ -64,14 +64,14 @@ namespace Kinogoblin
 
             if (GUILayout.Button("Cleanup Missing Scripts"))
                 CleanupMissingScripts();
-                
+
             GUILayout.Space(10f);
 
             settings.customView = EditorGUILayout.Toggle("Custom View", settings.customView);
             settings.debugSend = EditorGUILayout.Toggle("Debug send", settings.debugSend);
         }
 
-        #if UNITY_2019_1_OR_NEWER
+#if UNITY_2019_1_OR_NEWER
 
         [MenuItem("Tools/Kinogoblin tools/Cleanup Missing Scripts")]
         static void CleanupMissingScripts()
@@ -192,6 +192,10 @@ namespace Kinogoblin
                     {
                         EditorGUI.DrawRect(selectionRect, item.color);
                         EditorGUI.DropShadowLabel(selectionRect, gameObject.name.Replace(item.prefix, "").ToUpperInvariant(), item.style);
+                        if (!gameObject.activeSelf)
+                        {
+                            EditorGUI.DrawRect(selectionRect, item.colorDisable);
+                        }
                         return;
                     }
                 }

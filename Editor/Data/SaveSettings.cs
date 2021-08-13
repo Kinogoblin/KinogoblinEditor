@@ -26,6 +26,7 @@ namespace Kinogoblin
     {
         public string prefix;
         public Color color = new Color(0.5f, 0, 1);
+        public Color colorDisable = new Color(0, 0, 0,0.5f);
         public GUIStyle style;
     }
 }

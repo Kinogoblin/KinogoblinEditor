@@ -123,7 +123,9 @@ namespace Kinogoblin
             {
                 if (GUILayout.Button("Copy and save <b>" + selection.name + "</b>'s materials!", buttonStyle, buttonHeight))
                 {
-                    var pathWithName = pathCustom + "/" + selection.name + "/";
+                    var selectionName = selection.name;
+                    selectionName = selectionName.Trim();
+                    var pathWithName = pathCustom + "/" + selectionName + "/";
                     if (!Directory.Exists(pathWithName))
                     {
                         Directory.CreateDirectory(pathWithName);
