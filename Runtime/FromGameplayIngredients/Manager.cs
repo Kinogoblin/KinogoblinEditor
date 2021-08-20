@@ -40,51 +40,5 @@ namespace Kinogoblin.Runtime
 
         static readonly Type[] kAllManagerTypes = TypeUtility.GetConcreteTypes<Manager>();
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void AutoCreateAll()
-        {
-            s_Managers.Clear();
-
-
-            foreach(var type in kAllManagerTypes)
-            {
-                // Check for any Do Not Create Attribute
-                var doNotCreateAttr = type.GetCustomAttribute<DoNotCreateManagerAttribute>();
-                if (doNotCreateAttr != null)
-                    continue;
-
-                var prefabAttr = type.GetCustomAttribute<ManagerDefaultPrefabAttribute>(); 
-                GameObject gameObject;
-
-                if(prefabAttr != null)
-                {
-                    var prefab = Resources.Load<GameObject>(prefabAttr.prefab);
-
-                    if(prefab == null) // Try loading the "Default_" prefixed version of the prefab
-                    {
-                        prefab = Resources.Load<GameObject>("Default_"+prefabAttr.prefab);
-                    }
-
-                    if(prefab != null)
-                    {
-                        gameObject = GameObject.Instantiate(prefab);
-                    }
-                    else
-                    {
-                        Debug.LogError($"Could not instantiate default prefab for {type.ToString()} : No prefab '{prefabAttr.prefab}' found in resources folders. Ignoring...");
-                        continue;
-                    }
-                }
-                else
-                {
-                    gameObject = new GameObject();
-                    gameObject.AddComponent(type);
-                }
-                gameObject.name = type.Name;
-                GameObject.DontDestroyOnLoad(gameObject);
-                var comp = (Manager)gameObject.GetComponent(type);
-                s_Managers.Add(type,comp);
-            }
-        }
     }
 }
