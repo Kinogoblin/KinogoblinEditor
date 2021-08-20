@@ -451,7 +451,7 @@ namespace Kinogoblin
                             Helpful.Debug("Kinogoblin Editor ", "CopyPaste all components, except Transform, MeshFilter, MeshRenderer ^_^");
                         }
                         GUILayout.Space(10f);
-                        foreach (var component in selection.GetComponents<Component>())
+                        foreach (var component in refGameObject.GetComponents<Component>())
                         {
                             var componentType = component.GetType();
                             if (GUILayout.Button("CopyPaste " + componentType.Name + " "))
