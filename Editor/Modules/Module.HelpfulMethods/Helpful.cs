@@ -49,6 +49,16 @@ namespace Kinogoblin
                 GetListOfAllChilds(child, list);
             }
         }
+        public static List<Transform> GetListOfAllChilds(Transform parent)
+        {
+            List<Transform> list = new List<Transform>();
+            foreach (Transform child in parent)
+            {
+                list.Add(child);
+                GetListOfAllChilds(child, list);
+            }
+            return list;
+        }
 
         static void GetListOfChildsWithComponent<T>(Transform parent, List<Transform> list)
         {

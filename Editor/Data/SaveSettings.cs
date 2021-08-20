@@ -18,6 +18,9 @@ namespace Kinogoblin
         public bool debugSend = true;
         public string pathForModels = "Assets/__Project__/Models/MeshAssets/";
         public string pathForMaterials = "Assets/__Project__/Materials/";
+        
+        public GameObjectCustomSettings gameObjectCustomSettings;
+        public MeshRenderer renderer;
 
     }
 
@@ -26,7 +29,14 @@ namespace Kinogoblin
     {
         public string prefix;
         public Color color = new Color(0.5f, 0, 1);
-        public Color colorDisable = new Color(0, 0, 0,0.5f);
+        public Color colorDisable = new Color(0, 0, 0, 0.5f);
         public GUIStyle style;
     }
+
+    [Serializable]
+    public class GameObjectCustomSettings
+    {
+        public GameObject renderer;
+    }
+
 }

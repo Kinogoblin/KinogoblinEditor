@@ -35,7 +35,6 @@ namespace Kinogoblin
 
         public static void OtherGUI()
         {
-
             ScriptableObject scriptableObj = settings;
             SerializedObject serialObj = new SerializedObject(scriptableObj);
             SerializedProperty serialProp = serialObj.FindProperty("customHierarchy");

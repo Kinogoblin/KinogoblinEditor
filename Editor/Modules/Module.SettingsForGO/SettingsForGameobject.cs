@@ -33,6 +33,26 @@ namespace Kinogoblin
         private static Vector3 selectionPrevPos;
         private static Vector3 selectionPrevRot;
 
+        private static UnityEngine.Object refObject = null;
+        private static GameObject refGameObject = null;
+        private static bool changeRendererSettings = true;
+        private static bool changeForAllInHierarchy = true;
+
+
+        public static SaveSettings settings
+        {
+            get
+            {
+                if (_dataGameObjectCustomSettings == null)
+                {
+                    _dataGameObjectCustomSettings = EditorSettings.GetSettings();
+                }
+                return _dataGameObjectCustomSettings;
+            }
+        }
+        private static SaveSettings _dataGameObjectCustomSettings;
+
+
         private void OnEnable()
         {
             GetPrefs();
@@ -64,6 +84,425 @@ namespace Kinogoblin
                 }
             }
         }
+        /// //////////////////////
+        /// 
+
+        public static void SettingsForGameobjectGUI()
+        {
+
+            GUILayout.Box("SETTINGS FOR GO", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            GUILayout.Space(10f);
+
+            if (GUILayout.Button("Create child Pivote in center"))
+            {
+                SetGameObjestSettings.SetPivote();
+            }
+            if (GUILayout.Button("Create group of GO"))
+            {
+                SetGameObjestSettings.CreateGroup();
+            }
+
+            if (buttonStyle == null)
+            {
+                buttonStyle = new GUIStyle(GUI.skin.button) { richText = true };
+                headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
+            }
+
+
+            GUILayout.Box("ADJUST PIVOT", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            Transform selection = Selection.activeTransform;
+            if (!IsNull(selection))
+            {
+                if (!IsNull(selection.parent))
+                {
+                    if (selection.localPosition != Vector3.zero || selection.localEulerAngles != Vector3.zero)
+                    {
+                        if (GUILayout.Button("Move and rotate <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
+                            SetParentPivot(selection, false);
+
+                        if (selection.localEulerAngles != Vector3.zero)
+                            EditorGUILayout.HelpBox("Pivot will also be rotated to match " + selection.name + "'s rotation.", MessageType.None);
+
+                        if (GUILayout.Button("Move <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
+                            SetParentPivot(selection, true);
+                    }
+                    else
+                    {
+                        GUI.enabled = false;
+                        GUILayout.Button("Selected object is at pivot position", buttonStyle, buttonHeight);
+                        GUI.enabled = true;
+                    }
+                }
+                else
+                {
+                    GUI.enabled = false;
+                    GUILayout.Button("Selected object has no parent", buttonStyle, buttonHeight);
+                    GUI.enabled = true;
+                }
+            }
+            else
+            {
+                GUI.enabled = false;
+                GUILayout.Button("Nothing is selected", buttonStyle, buttonHeight);
+                GUI.enabled = true;
+            }
+
+            GUILayout.Space(15f);
+
+            auroSaveChangedMesh = EditorGUILayout.ToggleLeft("AutoSave Mesh", auroSaveChangedMesh);
+
+            GUILayout.Space(15f);
+
+            GUILayout.Box("MESH UTILITY", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            GUILayout.Space(5f);
+
+            GUILayout.Label("Custom path " + pathCustom);
+
+            if (GUILayout.Button("Set default path", buttonStyle, buttonHeight))
+            {
+                pathCustom = "Assets/__Project__/Models/MeshAssets/";
+                Helpful.Debug(pathCustom);
+            }
+            if (GUILayout.Button("Save custom path", buttonStyle, buttonHeight))
+            {
+                var temp = pathCustom;
+                pathCustom = EditorUtility.SaveFolderPanel("Save custom path", "", string.Empty);
+                int i = 0;
+                bool normalPath = false;
+                string[] tempPath = Helpful.GetName(pathCustom, '/');
+                foreach (var item in tempPath)
+                {
+                    if (item.Contains("Assets"))
+                    {
+                        normalPath = true;
+                        pathCustom = "";
+                        for (int j = i; j < tempPath.Length; j++)
+                        {
+                            pathCustom += tempPath[j] + "/";
+                        }
+                        continue;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                if (!normalPath)
+                {
+                    Helpful.Debug("Find path in project!!!");
+                    pathCustom = temp;
+                }
+                else
+                {
+                    Helpful.Debug(pathCustom);
+                }
+            }
+
+            EditorGUILayout.HelpBox("If an object has a MeshFilter, changing its pivot will modify the mesh. That modified mesh must be saved before it can be applied to prefab.", MessageType.None);
+
+            if (!IsNull(selection))
+            {
+                MeshFilter meshFilter = selection.GetComponent<MeshFilter>();
+                if (!IsNull(meshFilter) && !IsNull(meshFilter.sharedMesh))
+                {
+                    if (GUILayout.Button("Save <b>" + selection.name + "</b>'s mesh as Asset (Recommended)", buttonStyle, buttonHeight))
+                    {
+                        if (!Directory.Exists(pathCustom))
+                        {
+                            Directory.CreateDirectory(pathCustom);
+                        }
+                        SaveMesh(meshFilter, selection.name, true);
+                    }
+
+                    GUILayout.Space(5f);
+
+                    if (GUILayout.Button("Save <b>" + selection.name + "</b>'s mesh as OBJ", buttonStyle, buttonHeight))
+                    {
+                        if (!Directory.Exists(pathCustom))
+                        {
+                            Directory.CreateDirectory(pathCustom);
+                        }
+                        SaveMesh(meshFilter, selection.name, false);
+                    }
+                }
+                else
+                {
+                    GUI.enabled = false;
+                    GUILayout.Button("Selected object has no mesh", buttonStyle, buttonHeight);
+                    GUI.enabled = true;
+                }
+
+                GUILayout.Space(5f);
+
+                if (GUILayout.Button("Save all meshes as Asset (Recommended)", buttonStyle, buttonHeight))
+                {
+                    if (!Directory.Exists(pathCustom))
+                    {
+                        Directory.CreateDirectory(pathCustom);
+                    }
+                    for (int i = 0; i < Selection.gameObjects.Length; i++)
+                    {
+                        MeshFilter meshFilterGO = Selection.gameObjects[i].GetComponent<MeshFilter>();
+                        if (!IsNull(meshFilterGO) && !IsNull(meshFilterGO.sharedMesh))
+                        {
+                            SaveMesh(meshFilterGO, Selection.gameObjects[i].name + "" + i, true);
+                        }
+                    }
+                }
+
+                GUILayout.Space(5f);
+
+                if (GUILayout.Button("Save all meshes as OBJ", buttonStyle, buttonHeight))
+                {
+                    if (!Directory.Exists(pathCustom))
+                    {
+                        Directory.CreateDirectory(pathCustom);
+                    }
+                    for (int i = 0; i < Selection.gameObjects.Length; i++)
+                    {
+                        MeshFilter meshFilterGO = Selection.gameObjects[i].GetComponent<MeshFilter>();
+                        if (!IsNull(meshFilterGO) && !IsNull(meshFilterGO.sharedMesh))
+                        {
+                            SaveMesh(meshFilterGO, Selection.gameObjects[i].name + "" + i, false);
+                        }
+                    }
+                }
+
+
+            }
+            else
+            {
+                GUI.enabled = false;
+                GUILayout.Button("Nothing is selected", buttonStyle, buttonHeight);
+                GUI.enabled = true;
+            }
+
+            GUILayout.Space(15f);
+
+            GUILayout.Box("CopyPast SETTINGS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            GUILayout.Space(10f);
+
+
+            // ScriptableObject scriptableObj = settings;
+            // SerializedObject serialObj = new SerializedObject(scriptableObj);
+            // SerializedProperty serialProp = serialObj.FindProperty("gameObjectCustomSettings");
+
+
+            // EditorGUILayout.PropertyField(serialProp, true);
+            // serialObj.ApplyModifiedProperties();
+
+
+            EditorGUILayout.BeginHorizontal();
+            refObject = EditorGUILayout.ObjectField("Set ref gameObject", refObject, typeof(UnityEngine.Object), true);
+            EditorGUILayout.EndHorizontal();
+
+            if (refObject != null)
+            {
+                refGameObject = (GameObject)refObject;
+                if (refGameObject == null)
+                {
+                    Helpful.Debug("Kinogoblin Editor ", "Give me GameObject, please! ^_^");
+                    refObject = null;
+                }
+                else
+                {
+                    if (!IsNull(selection))
+                    {
+                        var renderer = refGameObject.GetComponent<MeshRenderer>();
+
+                        if (renderer != null)
+                        {
+
+                            GUILayout.Space(10f);
+                            GUILayout.Label("MeshRenderer CopyPaste settings", EditorStyles.boldLabel);
+                            GUILayout.Space(10f);
+
+                            changeRendererSettings = EditorGUILayout.ToggleLeft("I want to change renderer settings!", changeRendererSettings);
+
+                            if (changeRendererSettings)
+                            {
+                                changeForAllInHierarchy = EditorGUILayout.ToggleLeft("I want to change settings for Childs!", changeForAllInHierarchy);
+
+
+                                if (GUILayout.Button("CopyPaste CastShadows"))
+                                {
+                                    Helpful.Debug("Kinogoblin Editor ", "CopyPaste CastShadows");
+                                    Renderer tempRend = null;
+                                    tempRend = selection.GetComponent<Renderer>();
+                                    if (tempRend != null)
+                                    {
+                                        tempRend.shadowCastingMode = renderer.shadowCastingMode;
+                                    }
+                                    if (changeForAllInHierarchy)
+                                    {
+                                        foreach (var item in Helpful.GetListOfAllChilds(selection))
+                                        {
+                                            tempRend = item.GetComponent<Renderer>();
+                                            if (tempRend != null)
+                                            {
+                                                tempRend.shadowCastingMode = renderer.shadowCastingMode;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (GUILayout.Button("CopyPaste Occlusion When Dynamic"))
+                                {
+                                    Helpful.Debug("Kinogoblin Editor ", "CopyPaste Occlusion When Dynamic");
+                                    MeshRenderer tempRend = null;
+                                    tempRend = selection.GetComponent<MeshRenderer>();
+                                    if (tempRend != null)
+                                    {
+                                        tempRend.allowOcclusionWhenDynamic = renderer.allowOcclusionWhenDynamic;
+                                    }
+
+                                    if (changeForAllInHierarchy)
+                                    {
+                                        foreach (var item in Helpful.GetListOfAllChilds(selection))
+                                        {
+                                            tempRend = item.GetComponent<MeshRenderer>();
+                                            if (tempRend != null)
+                                            {
+                                                tempRend.allowOcclusionWhenDynamic = renderer.allowOcclusionWhenDynamic;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (GUILayout.Button("CopyPaste Rendering Layer Mask"))
+                                {
+                                    Helpful.Debug("Kinogoblin Editor ", "CopyPaste Rendering Layer Mask");
+                                    MeshRenderer tempRend = null;
+                                    tempRend = selection.GetComponent<MeshRenderer>();
+                                    if (tempRend != null)
+                                    {
+                                        tempRend.renderingLayerMask = renderer.renderingLayerMask;
+                                    }
+                                    if (changeForAllInHierarchy)
+                                    {
+                                        foreach (var item in Helpful.GetListOfAllChilds(selection))
+                                        {
+                                            tempRend = item.GetComponent<MeshRenderer>();
+                                            if (tempRend != null)
+                                            {
+                                                tempRend.renderingLayerMask = renderer.renderingLayerMask;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (GUILayout.Button("CopyPaste Light Probes"))
+                                {
+                                    Helpful.Debug("Kinogoblin Editor ", "CopyPaste Light Probes");
+                                    MeshRenderer tempRend = null;
+                                    tempRend = selection.GetComponent<MeshRenderer>();
+                                    if (tempRend != null)
+                                    {
+                                        tempRend.lightProbeUsage = renderer.lightProbeUsage;
+                                    }
+                                    if (changeForAllInHierarchy)
+                                    {
+                                        foreach (var item in Helpful.GetListOfAllChilds(selection))
+                                        {
+                                            tempRend = item.GetComponent<MeshRenderer>();
+                                            if (tempRend != null)
+                                            {
+                                                tempRend.lightProbeUsage = renderer.lightProbeUsage;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (GUILayout.Button("CopyPaste Reflection Probes"))
+                                {
+                                    Helpful.Debug("Kinogoblin Editor ", "CopyPaste Reflection Probes");
+                                    MeshRenderer tempRend = null;
+                                    tempRend = selection.GetComponent<MeshRenderer>();
+                                    if (tempRend != null)
+                                    {
+                                        tempRend.reflectionProbeUsage = renderer.reflectionProbeUsage;
+                                    }
+                                    if (changeForAllInHierarchy)
+                                    {
+                                        foreach (var item in Helpful.GetListOfAllChilds(selection))
+                                        {
+                                            tempRend = item.GetComponent<MeshRenderer>();
+                                            if (tempRend != null)
+                                            {
+                                                tempRend.reflectionProbeUsage = renderer.reflectionProbeUsage;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        GUILayout.Space(10f);
+                        GUILayout.Label("CopyPaste Components", EditorStyles.boldLabel);
+                        GUILayout.Space(10f);
+
+                        if (GUILayout.Button("CopyPasteAllComponents"))
+                        {
+                            CopySpecialComponents(refGameObject, selection.gameObject);
+                            Helpful.Debug("Kinogoblin Editor ", "CopyPaste all components, except Transform, MeshFilter, MeshRenderer ^_^");
+                        }
+                        GUILayout.Space(10f);
+                        foreach (var component in selection.GetComponents<Component>())
+                        {
+                            var componentType = component.GetType();
+                            if (GUILayout.Button("CopyPaste " + componentType.Name + " "))
+                            {
+                                UnityEditorInternal.ComponentUtility.CopyComponent(component);
+                                UnityEditorInternal.ComponentUtility.PasteComponentAsNew(selection.gameObject);
+                                Helpful.Debug("Kinogoblin Editor ", "CopyPaste " + componentType.Name + " ");
+                            }
+                        }
+
+
+                    }
+                }
+            }
+
+
+            EditorGUI.BeginChangeCheck();
+            createColliderObjectOnPivotChange = EditorGUILayout.ToggleLeft("Create Child Collider Object On Pivot Change", createColliderObjectOnPivotChange);
+            EditorGUILayout.HelpBox("Note that original collider(s) (if exists) will not be destroyed automatically.", MessageType.None);
+            if (EditorGUI.EndChangeCheck())
+                EditorPrefs.SetBool("AdjustPivotCreateColliders", createColliderObjectOnPivotChange);
+
+            GUILayout.Space(10f);
+
+            EditorGUI.BeginChangeCheck();
+            createNavMeshObstacleObjectOnPivotChange = EditorGUILayout.ToggleLeft("Create Child NavMesh Obstacle Object On Pivot Change", createNavMeshObstacleObjectOnPivotChange);
+            EditorGUILayout.HelpBox("Note that original NavMesh Obstacle (if exists) will not be destroyed automatically.", MessageType.None);
+            if (EditorGUI.EndChangeCheck())
+                EditorPrefs.SetBool("AdjustPivotCreateNavMeshObstacle", createNavMeshObstacleObjectOnPivotChange);
+
+        }
+
+
+        private static void CopySpecialComponents(GameObject _sourceGO, GameObject _targetGO)
+        {
+            foreach (var component in _sourceGO.GetComponents<Component>())
+            {
+                var componentType = component.GetType();
+                if (componentType != typeof(Transform) &&
+                    componentType != typeof(MeshFilter) &&
+                    componentType != typeof(MeshRenderer)
+                    )
+                {
+                    Helpful.Debug("Kinogoblin Editor ", "Found a component of type " + component.GetType());
+                    UnityEditorInternal.ComponentUtility.CopyComponent(component);
+                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(_targetGO);
+                    Helpful.Debug("Kinogoblin Editor ", "Copied " + component.GetType() + " from " + _sourceGO.name + " to " + _targetGO.name);
+                }
+            }
+        }
+
 
         private static void GetPrefs()
         {
@@ -331,231 +770,6 @@ namespace Kinogoblin
             return obj == null || obj.Equals(null);
         }
 
-        /// //////////////////////
-        /// 
-
-        public static void SettingsForGameobjectGUI()
-        {
-
-            GUILayout.Box("SETTINGS FOR GO", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
-
-            GUILayout.Space(10f);
-
-            if (GUILayout.Button("Create child Pivote in center"))
-            {
-                SetGameObjestSettings.SetPivote();
-            }
-            if (GUILayout.Button("Create group of GO"))
-            {
-                SetGameObjestSettings.CreateGroup();
-            }
-
-            if (buttonStyle == null)
-            {
-                buttonStyle = new GUIStyle(GUI.skin.button) { richText = true };
-                headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
-            }
-
-
-            GUILayout.Box("ADJUST PIVOT", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
-
-            Transform selection = Selection.activeTransform;
-            if (!IsNull(selection))
-            {
-                if (!IsNull(selection.parent))
-                {
-                    if (selection.localPosition != Vector3.zero || selection.localEulerAngles != Vector3.zero)
-                    {
-                        if (GUILayout.Button("Move and rotate <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
-                            SetParentPivot(selection,false);
-
-                        if (selection.localEulerAngles != Vector3.zero)
-                            EditorGUILayout.HelpBox("Pivot will also be rotated to match " + selection.name + "'s rotation.", MessageType.None);
-                        
-                        if (GUILayout.Button("Move <b>" + selection.parent.name + "</b>'s pivot here", buttonStyle, buttonHeight))
-                            SetParentPivot(selection, true);
-                    }
-                    else
-                    {
-                        GUI.enabled = false;
-                        GUILayout.Button("Selected object is at pivot position", buttonStyle, buttonHeight);
-                        GUI.enabled = true;
-                    }
-                }
-                else
-                {
-                    GUI.enabled = false;
-                    GUILayout.Button("Selected object has no parent", buttonStyle, buttonHeight);
-                    GUI.enabled = true;
-                }
-            }
-            else
-            {
-                GUI.enabled = false;
-                GUILayout.Button("Nothing is selected", buttonStyle, buttonHeight);
-                GUI.enabled = true;
-            }
-
-            GUILayout.Space(15f);
-
-            auroSaveChangedMesh = EditorGUILayout.ToggleLeft("AutoSave Mesh", auroSaveChangedMesh);
-
-            GUILayout.Space(15f);
-
-            GUILayout.Box("MESH UTILITY", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
-
-            GUILayout.Space(5f);
-
-            GUILayout.Label("Custom path " + pathCustom);
-
-            if (GUILayout.Button("Set default path", buttonStyle, buttonHeight))
-            {
-                pathCustom = "Assets/__Project__/Models/MeshAssets/";
-                Helpful.Debug(pathCustom);
-            }
-            if (GUILayout.Button("Save custom path", buttonStyle, buttonHeight))
-            {
-                var temp = pathCustom;
-                pathCustom = EditorUtility.SaveFolderPanel("Save custom path", "", string.Empty);
-                int i = 0;
-                bool normalPath = false;
-                string[] tempPath = Helpful.GetName(pathCustom, '/');
-                foreach (var item in tempPath)
-                {
-                    if (item.Contains("Assets"))
-                    {
-                        normalPath = true;
-                        pathCustom = "";
-                        for (int j = i; j < tempPath.Length; j++)
-                        {
-                            pathCustom += tempPath[j] + "/";
-                        }
-                        continue;
-                    }
-                    else
-                    {
-                        i++;
-                    }
-                }
-                if (!normalPath)
-                {
-                    Helpful.Debug("Find path in project!!!");
-                    pathCustom = temp;
-                }
-                else
-                {
-                    Helpful.Debug(pathCustom);
-                }
-            }
-
-            EditorGUILayout.HelpBox("If an object has a MeshFilter, changing its pivot will modify the mesh. That modified mesh must be saved before it can be applied to prefab.", MessageType.None);
-
-            if (!IsNull(selection))
-            {
-                MeshFilter meshFilter = selection.GetComponent<MeshFilter>();
-                if (!IsNull(meshFilter) && !IsNull(meshFilter.sharedMesh))
-                {
-                    if (GUILayout.Button("Save <b>" + selection.name + "</b>'s mesh as Asset (Recommended)", buttonStyle, buttonHeight))
-                    {
-                        if (!Directory.Exists(pathCustom))
-                        {
-                            Directory.CreateDirectory(pathCustom);
-                        }
-                        SaveMesh(meshFilter, selection.name, true);
-                    }
-
-                    GUILayout.Space(5f);
-
-                    if (GUILayout.Button("Save <b>" + selection.name + "</b>'s mesh as OBJ", buttonStyle, buttonHeight))
-                    {
-                        if (!Directory.Exists(pathCustom))
-                        {
-                            Directory.CreateDirectory(pathCustom);
-                        }
-                        SaveMesh(meshFilter, selection.name, false);
-                    }
-                }
-                else
-                {
-                    GUI.enabled = false;
-                    GUILayout.Button("Selected object has no mesh", buttonStyle, buttonHeight);
-                    GUI.enabled = true;
-                }
-
-                GUILayout.Space(5f);
-
-                if (GUILayout.Button("Save all meshes as Asset (Recommended)", buttonStyle, buttonHeight))
-                {
-                    if (!Directory.Exists(pathCustom))
-                    {
-                        Directory.CreateDirectory(pathCustom);
-                    }
-                    for (int i = 0; i < Selection.gameObjects.Length; i++)
-                    {
-                        MeshFilter meshFilterGO = Selection.gameObjects[i].GetComponent<MeshFilter>();
-                        if (!IsNull(meshFilterGO) && !IsNull(meshFilterGO.sharedMesh))
-                        {
-                            SaveMesh(meshFilterGO, Selection.gameObjects[i].name + "" + i, true);
-                        }
-                    }
-                }
-
-                GUILayout.Space(5f);
-
-                if (GUILayout.Button("Save all meshes as OBJ", buttonStyle, buttonHeight))
-                {
-                    if (!Directory.Exists(pathCustom))
-                    {
-                        Directory.CreateDirectory(pathCustom);
-                    }
-                    for (int i = 0; i < Selection.gameObjects.Length; i++)
-                    {
-                        MeshFilter meshFilterGO = Selection.gameObjects[i].GetComponent<MeshFilter>();
-                        if (!IsNull(meshFilterGO) && !IsNull(meshFilterGO.sharedMesh))
-                        {
-                            SaveMesh(meshFilterGO, Selection.gameObjects[i].name + "" + i, false);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                GUI.enabled = false;
-                GUILayout.Button("Nothing is selected", buttonStyle, buttonHeight);
-                GUI.enabled = true;
-            }
-
-            GUILayout.Space(15f);
-
-            GUILayout.Box("SETTINGS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
-
-            EditorGUI.BeginChangeCheck();
-            createColliderObjectOnPivotChange = EditorGUILayout.ToggleLeft("Create Child Collider Object On Pivot Change", createColliderObjectOnPivotChange);
-            EditorGUILayout.HelpBox("Note that original collider(s) (if exists) will not be destroyed automatically.", MessageType.None);
-            if (EditorGUI.EndChangeCheck())
-                EditorPrefs.SetBool("AdjustPivotCreateColliders", createColliderObjectOnPivotChange);
-
-            GUILayout.Space(10f);
-
-            EditorGUI.BeginChangeCheck();
-            createNavMeshObstacleObjectOnPivotChange = EditorGUILayout.ToggleLeft("Create Child NavMesh Obstacle Object On Pivot Change", createNavMeshObstacleObjectOnPivotChange);
-            EditorGUILayout.HelpBox("Note that original NavMesh Obstacle (if exists) will not be destroyed automatically.", MessageType.None);
-            if (EditorGUI.EndChangeCheck())
-                EditorPrefs.SetBool("AdjustPivotCreateNavMeshObstacle", createNavMeshObstacleObjectOnPivotChange);
-
-            GUILayout.Space(10f);
-
-            if (GUILayout.Button("Tern off rendering shadows for gameObjects"))
-            {
-                Debug.Log("<color=blue>Kinogoblin Editor</color> Off shadows");
-                SetGameObjestSettings.Shadows(false);
-            }
-            if (GUILayout.Button("Tern on rendering shadows for gameObjects"))
-            {
-                Debug.Log("<color=blue>Kinogoblin Editor</color> On shadows");
-                SetGameObjestSettings.Shadows(true);
-            }
-        }
 
         static class SetGameObjestSettings
         {
