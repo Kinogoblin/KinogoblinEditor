@@ -12,6 +12,7 @@
         SettingsForGameobject,
         ChangeMaterial,
         MultiSceneLoader,
+        AddOtherPackages,
         Custom
     }
 
@@ -33,8 +34,8 @@
             titleContent = new GUIContent("K. Editor", m_Logo);
             if (varaints.Length == 0)
             {
-                varaints = new string[5];
-                for (int i = 0; i < 5; i++)
+                varaints = new string[6];
+                for (int i = 0; i < 6; i++)
                 {
                     varaints[i] = ((TypesOfSettings) i).ToString();
                 }
@@ -80,6 +81,9 @@
                     break;
                 case TypesOfSettings.Custom:
                     Other.OtherGUI();
+                    break;
+                case TypesOfSettings.AddOtherPackages:
+                    OtherPackages.OtherPackagesGUI();
                     break;
                 default:
                     ChangeMaterial.ChangeMaterialGUI();

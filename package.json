@@ -1,13 +1,9 @@
 {
 	"name": "com.kinogoblin.editor",
 	"displayName": "Kinogoblin Editor",
-	"version": "1.13.1",
+	"version": "1.13.2",
 	"unity": "2020.3",
 	"description": "CustomEditor",
-	"dependencies": {
-		"com.unity.cinemachine": "2.6.3",
-		"com.unity.timeline": "1.4.5"
-	  },
 	"keywords": [ "custom", "editor", "folder", "materials", "pivote","layout"],
 	"category": "editor"
 }

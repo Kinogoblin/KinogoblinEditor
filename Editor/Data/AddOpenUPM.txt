@@ -1,0 +1,14 @@
+,
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.kinogoblin.editor",
+        "com.dbrizov.naughtyattributes",
+	"net.peeweek",
+        "com.openupm"
+      ]
+    }
+  ]
+}
