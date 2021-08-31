@@ -18,7 +18,7 @@ namespace Kinogoblin
 
         public static void Debug(string message)
         {
-            if(Other.debugSend)
+            if (Other.debugSend)
             {
                 UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message));
             }
@@ -87,6 +87,14 @@ namespace Kinogoblin
             string[] newname = null;
             if (name.Contains(symbol.ToString()))
                 newname = name.Split(new char[] { symbol });
+            return newname;
+        }
+
+        public static string[] GetName(string name, string textPart)
+        {
+            string[] newname = null;
+            if (name.Contains(textPart))
+                newname = name.Split(new string[] { textPart }, StringSplitOptions.None);
             return newname;
         }
 

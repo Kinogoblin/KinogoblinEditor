@@ -31,12 +31,32 @@ namespace Kinogoblin
 
             GUILayout.Space(10f);
 
-            if (GUILayout.Button("OpenUPMCheck"))
-                OpenUPMCheck();
-            if (GUILayout.Button("Add naughtyattributes"))
+            if (GUILayout.Button("Add Open UPM"))
+                AddOpenUPM();
+            if (GUILayout.Button("Add kinogoblin editor from UPM"))
+                AddKinogoblinEditorFromUPM();
+
+
+            GUILayout.Space(10f);
+
+            GUILayout.Box("Add other packages from UPM", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            GUILayout.Space(10f);
+
+            if (GUILayout.Button("Add Naughtyattributes"))
                 AddNaughtyattributes();
-            if (GUILayout.Button("Remove naughtyattributes"))
-                AddNaughtyattributes();
+            if (GUILayout.Button("Add GameIngredients"))
+                AddGameIngredients();
+            if (GUILayout.Button("Add RuntimeInspector"))
+                AddRuntimeInspector();
+            if (GUILayout.Button("Add IngameDebugConsole"))
+                AddIngameDebugConsole();
+            if (GUILayout.Button("Add Graphy"))
+                AddGraphy();
+            if (GUILayout.Button("Add Unitask"))
+                AddUnitask();
+            if (GUILayout.Button("Add Unirx"))
+                AddUnirx();
 
 
             GUILayout.Space(10f);
@@ -45,7 +65,19 @@ namespace Kinogoblin
 
         static ListRequest Request;
 
-        static void OpenUPMCheck()
+        static void CheckUPM()
+        {
+            var path = Path.GetFullPath("Packages/manifest.json");
+
+            string contents = File.ReadAllText(path);
+
+            foreach (var item in Helpful.GetName(contents, "scopedRegistries"))
+            {
+                Debug.Log(item);
+            }
+        }
+
+        static void AddOpenUPM()
         {
             var path = Path.GetFullPath("Packages/manifest.json");
             var path1 = Path.GetFullPath("Packages/com.kinogoblin.editor/Editor/Data");
@@ -64,7 +96,7 @@ namespace Kinogoblin
 
             if (contents.Contains("OpenUPM"))
             {
-                Debug.Log("Have OpenUPM");
+                // Debug.Log("Have OpenUPM");
             }
             else
             {
@@ -80,15 +112,83 @@ namespace Kinogoblin
                 newManifest += helpInfo;
                 File.WriteAllText(path, newManifest);
                 AssetDatabase.Refresh();
-                Request = Client.List();  // List packages installed for the Project
-                EditorApplication.update += ProgressCheckKinogoblin;
             }
+        }
+
+        static void AddKinogoblinEditorFromUPM()
+        {
+            AddOpenUPM();
+            Request = Client.List();  // List packages installed for the Project
+            EditorApplication.update += ProgressCheckKinogoblin;
         }
 
         static void AddNaughtyattributes()
         {
-            Client.Add("com.dbrizov.naughtyattributes");
-            AssetDatabase.Refresh();
+            AddOpenUPM();
+            AddNewPackageForUPM("com.dbrizov.naughtyattributes", "com.dbrizov.naughtyattributes");
+        }
+
+        static void AddGameIngredients()
+        {
+            AddOpenUPM();
+            AddNewPackageForUPM("net.peeweek.gameplay-ingredients", "net.peeweek.gameplay-ingredients");
+        }
+
+        static void AddRuntimeInspector()
+        {
+            AddOpenUPM();
+            AddNewPackageForUPM("com.yasirkula.runtimeinspector", "com.yasirkula.runtimeinspector");
+        }
+        static void AddIngameDebugConsole()
+        {
+            AddOpenUPM();
+            AddNewPackageForUPM("com.yasirkula.ingamedebugconsole", "com.yasirkula.ingamedebugconsole");
+        }
+        static void AddGraphy()
+        {
+            AddOpenUPM();
+            AddNewPackageForUPM("com.tayx.graphy", "com.tayx.graphy");
+        }
+        static void AddUnitask()
+        {
+            AddOpenUPM();
+            AddNewPackageForUPM("com.cysharp.unitask", "com.cysharp.unitask");
+        }
+        static void AddUnirx()
+        {
+            AddOpenUPM();
+            AddNewPackageForUPM("com.neuecc.unirx", "com.neuecc.unirx");
+        }
+
+
+        static void AddNewPackageForUPM(string scope, string name)
+        {
+            var path = Path.GetFullPath("Packages/manifest.json");
+            var path1 = Path.GetFullPath("Packages/com.kinogoblin.editor/Editor/Data");
+            string contents = File.ReadAllText(path);
+            if (!contents.Contains(scope) && !contents.Contains(name))
+            {
+                Helpful.Debug("Try to add ", scope);
+                if (Directory.Exists(path1))
+                {
+                    path1 = Path.GetFullPath("Packages/com.kinogoblin.editor/Editor/Data/AddOpenUPM1.txt");
+                }
+                else
+                {
+                    path1 = Application.dataPath + " /GitKinogoblin/KinogoblinEditor/Editor/Data/AddOpenUPM1.txt";
+                }
+                var helpInfo = File.ReadAllText(path1);
+
+                var parts = Helpful.GetName(contents, helpInfo);
+                var newManifest = parts[0];
+                newManifest += "\"" + scope + "\",\n";
+                newManifest += helpInfo;
+                newManifest += parts[1];
+                File.WriteAllText(path, newManifest);
+                AssetDatabase.Refresh();
+                Client.Add(name);
+                AssetDatabase.Refresh();
+            }
         }
 
 
