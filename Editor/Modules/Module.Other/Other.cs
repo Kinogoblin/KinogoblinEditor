@@ -68,6 +68,7 @@ namespace Kinogoblin
 
             settings.customView = EditorGUILayout.Toggle("Custom View", settings.customView);
             settings.debugSend = EditorGUILayout.Toggle("Debug send", settings.debugSend);
+            settings.enableCustomImportProcessor = EditorGUILayout.Toggle("Enable custom import processor", settings.enableCustomImportProcessor);
         }
 
 #if UNITY_2019_1_OR_NEWER

@@ -21,6 +21,7 @@ namespace Kinogoblin
         
         public GameObjectCustomSettings gameObjectCustomSettings;
         public MeshRenderer renderer;
+        public bool enableCustomImportProcessor = false;
 
     }
 
