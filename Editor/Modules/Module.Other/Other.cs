@@ -189,8 +189,10 @@ namespace Kinogoblin
                 {
                     if (gameObject.name.StartsWith(item.prefix, System.StringComparison.Ordinal) && item.prefix != "")
                     {
-                        EditorGUI.DrawRect(selectionRect, item.color);
-                        EditorGUI.DropShadowLabel(selectionRect, gameObject.name.Replace(item.prefix, "").ToUpperInvariant(), item.style);
+                        var tempRect = selectionRect;
+                        tempRect.xMax = (tempRect.xMax*3)/4;
+                        EditorGUI.DrawRect(tempRect, item.color);
+                        EditorGUI.DropShadowLabel(tempRect, gameObject.name.Replace(item.prefix, "").ToUpperInvariant(), item.style);
                         if (!gameObject.activeSelf)
                         {
                             EditorGUI.DrawRect(selectionRect, item.colorDisable);

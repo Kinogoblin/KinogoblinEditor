@@ -11,7 +11,6 @@
         FolderUtils,
         SettingsForGameobject,
         ChangeMaterial,
-        MultiSceneLoader,
         AddOtherPackages,
         Custom
     }
@@ -34,8 +33,8 @@
             titleContent = new GUIContent("K. Editor", m_Logo);
             if (varaints.Length == 0)
             {
-                varaints = new string[6];
-                for (int i = 0; i < 6; i++)
+                varaints = new string[(int)TypesOfSettings.Custom+1];
+                for (int i = 0; i < (int)TypesOfSettings.Custom+1; i++)
                 {
                     varaints[i] = ((TypesOfSettings) i).ToString();
                 }
@@ -76,14 +75,11 @@
                 case TypesOfSettings.FolderUtils:
                     FolderUtils.FolderUtilsGUI();
                     break;
-                case TypesOfSettings.MultiSceneLoader:
-                    MultiSceneLoaderGUI();
+                case TypesOfSettings.AddOtherPackages:
+                    OtherPackages.OtherPackagesGUI();
                     break;
                 case TypesOfSettings.Custom:
                     Other.OtherGUI();
-                    break;
-                case TypesOfSettings.AddOtherPackages:
-                    OtherPackages.OtherPackagesGUI();
                     break;
                 default:
                     ChangeMaterial.ChangeMaterialGUI();

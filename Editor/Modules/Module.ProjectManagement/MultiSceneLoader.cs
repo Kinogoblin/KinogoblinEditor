@@ -8,7 +8,7 @@ using System;
 namespace Kinogoblin
 {
 
-    [CreateAssetMenu(fileName = "Multi-Scene Loader", menuName = "Scene Management/Multi-Scene Loader", order = 2)]
+    [CreateAssetMenu(fileName = "Multi-Scene Loader", menuName = "KinogoblinAssets/Multi-Scene Loader", order = 2)]
     public class MultiSceneLoader : ScriptableObject
     {
         [Header("Main Scenes")]
