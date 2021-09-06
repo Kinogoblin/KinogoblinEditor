@@ -1,17 +1,28 @@
 {
-	"name": "com.kinogoblin.editor",
-	"displayName": "Kinogoblin Editor",
-	"version": "1.14.2",
-	"unity": "2021.1",
-	"description": "CustomEditor",
-	"keywords": [ "custom", "editor", "folder", "materials", "pivote","layout"],
-	"category": "editor",
-	"samples": [
-		{
-		  "displayName": "CameraExtraTool",
-		  "description": "Methods for scene camera from game ingredients.",
-		  "path": "Samples~/CameraExtraTool"
-		}
-	]
+  "name": "com.kinogoblin.editor",
+  "displayName": "Kinogoblin Editor",
+  "version": "1.14.2",
+  "unity": "2021.1",
+  "description": "CustomEditor",
+  "keywords": [
+    "custom",
+    "editor",
+    "folder",
+    "materials",
+    "pivote",
+    "layout"
+  ],
+  "category": "editor",
+  "samples": [
+    {
+      "displayName": "CameraExtraTool",
+      "description": "Methods for scene camera from game ingredients.",
+      "path": "Samples~/CameraExtraTool"
+    },
+    {
+      "displayName": "CustomImportProcessor",
+      "description": "Methods for get custom info from models.",
+      "path": "Samples~/CameraExtraTool"
+    }
+  ]
 }
-
