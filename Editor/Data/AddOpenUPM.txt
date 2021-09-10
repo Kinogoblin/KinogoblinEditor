@@ -4,7 +4,7 @@
       "name": "OpenUPM",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.kinogoblin.editor"
+        "com.kinogoblin.editor",
         "com.openupm"
       ]
     }
