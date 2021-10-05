@@ -11,9 +11,5 @@
     [TrackClipType(typeof(ParticleSystemClip))]
     public class ParticleSystemTrack : TrackAsset
     {
-        public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
-        {
-            return ScriptPlayable<ParticleSystemMixer>.Create(graph, inputCount);
-        }
     }
 }

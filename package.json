@@ -1,7 +1,7 @@
 {
   "name": "com.kinogoblin.editor",
   "displayName": "Kinogoblin Editor",
-  "version": "1.14.4",
+  "version": "1.14.5",
   "unity": "2021.1",
   "description": "CustomEditor",
   "keywords": [
@@ -10,6 +10,7 @@
     "folder",
     "materials",
     "pivote",
+    "playables",
     "layout"
   ],
   "category": "editor",
@@ -23,6 +24,11 @@
       "displayName": "CustomImportProcessor",
       "description": "Methods for get custom info from models.",
       "path": "Samples~/CameraExtraTool"
+    },
+    {
+      "displayName": "Playable Particle System",
+      "description": "Methods for get custom info from models.",
+      "path": "Samples~/Playables/ParticleSystemPlayable"
     }
   ]
 }
