@@ -17,6 +17,8 @@ namespace Kinogoblin
         private static readonly GUILayoutOption buttonHeight = GUILayout.Height(30);
         private static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
 
+        private static bool _updateSkinnedMeshRenderer = false;
+
         public static string pathCustom
         {
             get
@@ -45,6 +47,9 @@ namespace Kinogoblin
             EditorGUILayout.BeginHorizontal();
             source = EditorGUILayout.ObjectField("Set material", source, typeof(UnityEngine.Object), true);
             EditorGUILayout.EndHorizontal();
+
+            _updateSkinnedMeshRenderer = GUILayout.Toggle(_updateSkinnedMeshRenderer, "Update material in SkinnedMeshRenderer");
+
             if (GUILayout.Button("Set checked material"))
             {
                 Helpful.Debug("Kinogoblin Editor ", "Set checked material");
@@ -60,7 +65,7 @@ namespace Kinogoblin
                         Debug.LogError("<color=blue>Kinogoblin Editor</color> This file is not material! I'll look for material by object name");
                     }
                 }
-                SetMaterialButton.SetCheckMaterial(checkedMaterial);
+                SetMaterialButton.SetCheckMaterial(checkedMaterial, _updateSkinnedMeshRenderer);
             }
 
             GUILayout.Space(10f);
@@ -157,11 +162,11 @@ namespace Kinogoblin
                 }
             }
 
-            public static void SetCheckMaterial(Material mat)
+            public static void SetCheckMaterial(Material mat, bool updateSkinnedMeshRenderer)
             {
                 if (Selection.activeGameObject != null)
                 {
-                    CheckCheckedMaterial(Selection.activeGameObject, mat);
+                    CheckCheckedMaterial(Selection.activeGameObject, mat, updateSkinnedMeshRenderer);
                 }
                 else
                 {
@@ -178,18 +183,18 @@ namespace Kinogoblin
                 ChangeNewMaterial(AllObjects, activeObject);
             }
 
-            static void CheckCheckedMaterial(GameObject activeObject, Material mat)
+            static void CheckCheckedMaterial(GameObject activeObject, Material mat, bool updateSkinnedMeshRenderer)
             {
                 var AllObjects = new List<Transform>();
                 AllObjects.Add(activeObject.transform);
                 Helpful.GetListOfAllChilds(activeObject.transform, AllObjects);
                 if (mat != null)
                 {
-                    ChangeCheckedMaterial(AllObjects, activeObject, mat);
+                    ChangeCheckedMaterial(AllObjects, activeObject, mat, updateSkinnedMeshRenderer);
                 }
                 else
                 {
-                    ChangeCheckedMaterial(AllObjects, activeObject);
+                    ChangeCheckedMaterial(AllObjects, activeObject, updateSkinnedMeshRenderer);
                 }
             }
 
@@ -223,7 +228,7 @@ namespace Kinogoblin
                 }
             }
 
-            static void ChangeCheckedMaterial(List<Transform> list, GameObject go)
+            static void ChangeCheckedMaterial(List<Transform> list, GameObject go, bool updateSkinnedMeshRenderer)
             {
                 if (Directory.Exists("Assets/Resources/"))
                 {
@@ -234,12 +239,26 @@ namespace Kinogoblin
                         {
                             if (item.GetComponent<MeshRenderer>() != null)
                             {
-                                var mats = item.GetComponent<MeshRenderer>().materials;
+                                var mats = item.GetComponent<MeshRenderer>().sharedMaterials;
                                 for (int i = 0; i < mats.Length; i++)
                                 {
                                     mats[i] = mat;
                                 }
-                                item.GetComponent<MeshRenderer>().materials = mats;
+                                item.GetComponent<MeshRenderer>().sharedMaterials = mats;
+                            }
+                            if (updateSkinnedMeshRenderer)
+                            {
+                                var skinnedMeshRenderer = item.GetComponent<SkinnedMeshRenderer>();
+
+                                if (skinnedMeshRenderer != null)
+                                {
+                                    var mats = skinnedMeshRenderer.sharedMaterials;
+                                    for (int i = 0; i < mats.Length; i++)
+                                    {
+                                        mats[i] = mat;
+                                    }
+                                    skinnedMeshRenderer.sharedMaterials = mats;
+                                }
                             }
                         }
                     }
@@ -253,18 +272,34 @@ namespace Kinogoblin
                     Debug.LogError("<color=blue>Kinogoblin Editor</color> I couldn't find any material by object name!");
                 }
             }
-            static void ChangeCheckedMaterial(List<Transform> list, GameObject go, Material mat)
+
+            static void ChangeCheckedMaterial(List<Transform> list, GameObject go, Material mat, bool updateSkinnedMeshRenderer)
             {
                 foreach (var item in list)
                 {
-                    if (item.GetComponent<MeshRenderer>() != null)
+                    var meshRenderer = item.GetComponent<MeshRenderer>();
+                    if (meshRenderer != null)
                     {
-                        var mats = item.GetComponent<MeshRenderer>().materials;
+                        var mats = meshRenderer.materials;
                         for (int i = 0; i < mats.Length; i++)
                         {
                             mats[i] = mat;
                         }
-                        item.GetComponent<MeshRenderer>().materials = mats;
+                        meshRenderer.sharedMaterials = mats;
+                    }
+                    if (updateSkinnedMeshRenderer)
+                    {
+                        var skinnedMeshRenderer = item.GetComponent<SkinnedMeshRenderer>();
+
+                        if (skinnedMeshRenderer != null)
+                        {
+                            var mats = skinnedMeshRenderer.sharedMaterials;
+                            for (int i = 0; i < mats.Length; i++)
+                            {
+                                mats[i] = mat;
+                            }
+                            skinnedMeshRenderer.sharedMaterials = mats;
+                        }
                     }
                 }
             }

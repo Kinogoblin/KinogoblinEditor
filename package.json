@@ -1,7 +1,7 @@
 {
   "name": "com.kinogoblin.editor",
   "displayName": "Kinogoblin Editor",
-  "version": "1.14.5",
+  "version": "1.14.6",
   "unity": "2021.1",
   "description": "CustomEditor",
   "keywords": [
@@ -27,8 +27,43 @@
     },
     {
       "displayName": "Playable Particle System",
-      "description": "Methods for get custom info from models.",
+      "description": "Playable for changing particle system.",
       "path": "Samples~/Playables/ParticleSystemPlayable"
+    },
+    {
+      "displayName": "Playable Video",
+      "description": "Playable for playing video.",
+      "path": "Samples~/Playables/VideoPlayable"
+    },
+    {
+      "displayName": "Playable Fog",
+      "description": "Playable for changing fog.",
+      "path": "Samples~/Playables/FodPlayable"
+    },
+    {
+      "displayName": "Instance Prefab Playable",
+      "description": "Playable for instancing prefab.",
+      "path": "Samples~/Playables/InstancePrefabPlayable"
+    },
+    {
+      "displayName": "Materials Playable",
+      "description": "Playable for changing material property.",
+      "path": "Samples~/Playables/MaterialsPlayable"
+    },
+    {
+      "displayName": "Post Processing Playable",
+      "description": "Playable for changing postprocessing.",
+      "path": "Samples~/Playables/PostProcessingPlayable"
+    },
+    {
+      "displayName": "Scene Additive Loader",
+      "description": "Playable for loading scene additive.",
+      "path": "Samples~/Playables/SceneAdditiveLoader"
+    },
+    {
+      "displayName": "SkyBox Playable",
+      "description": "Playble for change skybox material (not properties).",
+      "path": "Samples~/Playables/SkyBoxPlayable"
     }
   ]
 }
