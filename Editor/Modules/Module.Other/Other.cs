@@ -184,21 +184,24 @@ namespace Kinogoblin
         static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            if (gameObject != null && Other.settings.customizeHierarchy)
+            if (Other.settings != null)
             {
-                foreach (var item in Other.settings.customHierarchy)
+                if (gameObject != null && Other.settings.customizeHierarchy)
                 {
-                    if (gameObject.name.StartsWith(item.prefix, System.StringComparison.Ordinal) && item.prefix != "")
+                    foreach (var item in Other.settings.customHierarchy)
                     {
-                        var tempRect = selectionRect;
-                        tempRect.xMax = (tempRect.xMax*3)/4;
-                        EditorGUI.DrawRect(tempRect, item.color);
-                        EditorGUI.DropShadowLabel(tempRect, gameObject.name.Replace(item.prefix, "").ToUpperInvariant(), item.style);
-                        if (!gameObject.activeSelf)
+                        if (gameObject.name.StartsWith(item.prefix, System.StringComparison.Ordinal) && item.prefix != "")
                         {
-                            EditorGUI.DrawRect(selectionRect, item.colorDisable);
+                            var tempRect = selectionRect;
+                            tempRect.xMax = (tempRect.xMax * 3) / 4;
+                            EditorGUI.DrawRect(tempRect, item.color);
+                            EditorGUI.DropShadowLabel(tempRect, gameObject.name.Replace(item.prefix, "").ToUpperInvariant(), item.style);
+                            if (!gameObject.activeSelf)
+                            {
+                                EditorGUI.DrawRect(selectionRect, item.colorDisable);
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
