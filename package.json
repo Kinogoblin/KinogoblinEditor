@@ -1,7 +1,7 @@
 {
   "name": "com.kinogoblin.editor",
   "displayName": "Kinogoblin Editor",
-  "version": "1.14.6",
+  "version": "1.14.7",
   "unity": "2021.1",
   "description": "CustomEditor",
   "keywords": [
@@ -19,6 +19,11 @@
       "displayName": "CameraExtraTool",
       "description": "Methods for scene camera from game ingredients.",
       "path": "Samples~/CameraExtraTool"
+    },
+    {
+      "displayName": "Recorder Playable Generator",
+      "description": "Generate Recorder playables from animationTrack.",
+      "path": "Samples~/RecorderGeneratorTool"
     },
     {
       "displayName": "CustomImportProcessor",
