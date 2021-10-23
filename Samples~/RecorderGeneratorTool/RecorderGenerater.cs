@@ -9,25 +9,35 @@ using Sirenix.OdinInspector;
 using UnityEngine.Playables;
 using UnityEditor.Recorder;
 using UnityEditor.Presets;
+using Kinogoblin;
 
-namespace Kinogoblin.Tools
+namespace UnityEditor.Recorder.Timeline
 {
     public class RecorderGenerater : MonoBehaviour
     {
         [SerializeField] Preset preset;
-        [SerializeField] public RecorderSettings defaultSettings;
-        [SerializeField] private AnimationTrack _animationTrack;
-        [SerializeField] private List<TimelineClip> _animationClips = new List<TimelineClip>();
-        [SerializeField] private RecorderTrack _recorderTrack;
-        [SerializeField] private List<RecorderClip> _recorderClips = new List<RecorderClip>();
+        [SerializeField] string prefix;
+        private List<TimelineClip> _animationClips = new List<TimelineClip>();
+        private RecorderTrack _recorderTrack;
+        private List<RecorderSettings> recorderSettings = new List<RecorderSettings>();
+        private List<RecorderSettings> recorderSettingsAssets = new List<RecorderSettings>();
 
         private TrackAsset parent;
+
         [Button]
-        public void GetVoiceClips()
+        public void GeneratedRecorderAssets()
         {
             _recorderTrack = new RecorderTrack();
             var playable = GetComponent<PlayableDirector>();
-
+            _animationClips = new List<TimelineClip>();
+            foreach (var item in recorderSettings)
+            {
+                DestroyImmediate(item);
+            }
+            foreach (var item in recorderSettingsAssets)
+            {
+                DestroyImmediate(item);
+            }
             var asset = (TimelineAsset)playable.playableAsset;
             Debug.Log(asset.name);
             if (!asset) return;
@@ -57,19 +67,38 @@ namespace Kinogoblin.Tools
                     foreach (var clip in _animationClips)
                     {
                         var recorderClip = rootTrack.CreateClip<RecorderClip>();
+
                         RecorderClip recorderClipAsset = recorderClip.asset as RecorderClip;
                         var clipAsset = clip.asset as AnimationPlayableAsset;
                         recorderClip.start = clip.start;
                         recorderClip.duration = clip.duration;
                         recorderClip.displayName = clipAsset.clip.name;
                         var r = (RecorderSettings)CreateFromPreset(preset);
-                        r.FileNameGenerator.FileName = clipAsset.clip.name + "_<Take>";
-                        recorderClipAsset.settings = r;
+                        var rec = CreateAsset(r,recorderClipAsset);
+                        var name = clipAsset.clip.name;
+                        name = "[" + Helpful.GetName(name,'[',2);
+                        recorderClip.displayName = prefix + name;
+                        recorderSettings.Add(r);
+                        recorderSettingsAssets.Add(rec);
+                        rec.FileNameGenerator.FileName = prefix + name + "_<Take>";
+                        rec.name = prefix + name + "_<Take>";
+                        recorderClipAsset.settings = rec;
                     }
                 }
             }
 
         }
+
+        private RecorderSettings CreateAsset(RecorderSettings recorderSettings,RecorderClip clip)
+        {
+            var recorder = (RecorderSettings)ScriptableObject.CreateInstance(recorderSettings.GetType());
+            recorder = recorderSettings;
+            AssetDatabase.AddObjectToAsset(recorder, clip);
+            Undo.RegisterCreatedObjectUndo(recorder, "Recorded Settings Created");
+            AssetDatabase.SaveAssets();
+            return recorder;
+        }
+
         static ScriptableObject CreateFromPreset(Preset preset)
         {
             var instance = ScriptableObject.CreateInstance(preset.GetTargetFullTypeName());
