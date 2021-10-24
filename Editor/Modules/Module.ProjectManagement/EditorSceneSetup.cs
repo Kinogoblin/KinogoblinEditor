@@ -9,7 +9,7 @@ using UnityEditor.Callbacks;
 using UnityEditor.ProjectWindowCallback;
 using System.IO;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
 	public class EditorSceneSetup : ScriptableObject
     {

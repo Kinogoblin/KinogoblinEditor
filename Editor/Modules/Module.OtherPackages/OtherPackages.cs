@@ -6,7 +6,7 @@ using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.Requests;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
     public class OtherPackages
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
 
     public class ChangeMaterial : EditorWindow

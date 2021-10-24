@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
     //[CreateAssetMenu(fileName = "Editor Data", menuName = "Kinogoblin/Data ", order = 2)]
     public class SaveSettings : ScriptableObject

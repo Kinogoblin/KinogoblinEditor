@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using System;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
     [CustomEditor(typeof(EditorSceneSetup))]
     public class EditorSceneSetupEditor : UnityEditor.Editor

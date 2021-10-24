@@ -3,7 +3,7 @@ using System.Reflection;
 
 using Type = System.Type;
 
-namespace MWU.FilmLib
+namespace Kinogoblin.Editor
 {
 	public static class LayoutUtility
 	{
