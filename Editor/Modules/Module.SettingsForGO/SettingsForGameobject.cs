@@ -7,7 +7,7 @@ using System.Globalization;
 using UnityEditor;
 using System.IO;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
 
     public class SettingsForGameobject : EditorWindow

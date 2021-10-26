@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
     public static class LayoutLoader
 	{

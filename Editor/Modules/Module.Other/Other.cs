@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
 
     public class Other

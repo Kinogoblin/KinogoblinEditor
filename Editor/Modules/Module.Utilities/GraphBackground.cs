@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Kinogoblin
+namespace Kinogoblin.Editor
 {
 	public static class GraphBackground
 	{

@@ -1,4 +1,4 @@
-﻿namespace Kinogoblin
+﻿namespace Kinogoblin.Editor
 {
     //Version 1.11
     using UnityEngine;
