@@ -37,11 +37,11 @@ namespace Kinogoblin.Editor.FavoriteAssets
             string newDirName = "Users";
             var directories = Directory.GetDirectories(Application.dataPath, "Editor", SearchOption.AllDirectories);
 
-            string parentDir = directories.FirstOrDefault<string>(val => val.Contains("AssetFinderPRO"));
+            string parentDir = directories.FirstOrDefault<string>(val => val.Contains("Module.FavoriteAssets"));
             if (string.IsNullOrEmpty(parentDir))
-                parentDir = directories.FirstOrDefault<string>(val => val.Contains("FavoritesPRO"));
+                parentDir = directories.FirstOrDefault<string>(val => val.Contains("Module.FavoriteAssets"));
 
-            string relativePath = "Assets" + parentDir.Substring(Application.dataPath.Length); ;
+            string relativePath = "Assets/Resources";
 
             string userDir = relativePath + Path.DirectorySeparatorChar + newDirName;
 
