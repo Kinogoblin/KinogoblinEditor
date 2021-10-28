@@ -42,6 +42,12 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 parentDir = directories.FirstOrDefault<string>(val => val.Contains("Module.FavoriteAssets"));
 
             string relativePath = "Assets/Resources";
+            
+            if (!AssetDatabase.IsValidFolder(relativePath))
+            {
+                AssetDatabase.CreateFolder("Assets","Resources");
+                return null;
+            }
 
             string userDir = relativePath + Path.DirectorySeparatorChar + newDirName;
 
