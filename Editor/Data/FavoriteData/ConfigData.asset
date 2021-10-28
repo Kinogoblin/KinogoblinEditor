@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b649f62787fb2e448b0fb350b92bccfd, type: 3}
+  m_Name: ConfigData
+  m_EditorClassIdentifier: 
+  m_windowPaneIcon: {fileID: 2800000, guid: 0fe05754ad77ebf61eb355a7badc0844, type: 3}
+  m_deleteIcon: {fileID: 2800000, guid: 2a6f902d375972ca1fe6ad8bf2ac7a80, type: 3}
+  m_favoriteMarkerIcon: {fileID: 2800000, guid: a0f1a07984446d2c3701b5c9d85d1a4e,
+    type: 3}
+  m_favoriteIcon: {fileID: 2800000, guid: cf5b21b271a52f5973546de7c1dd0f97, type: 3}
+  m_folderIcon: {fileID: 2800000, guid: 7563318ebbcffe8a5a94d2bd2943b305, type: 3}
+  m_settingsIcon: {fileID: 2800000, guid: 93f1d9d22104125a6aea91ddcb16db26, type: 3}
+  m_usersIcon: {fileID: 2800000, guid: 72c6dca66794086b7bcdea3f8b3900e8, type: 3}
+  m_sceneIcon: {fileID: 2800000, guid: cfff4a5aa8dab346888b8020991d7284, type: 3}
+  m_historyIcon: {fileID: 2800000, guid: b5bf07ca4308b4b7c45cb8de48adb0f3, type: 3}
+  m_copyIcon: {fileID: 2800000, guid: 80a2be62df81f068e36da0afba2de2d8, type: 3}
+  m_plusIcon: {fileID: 2800000, guid: cd94b517e8625f28a3d70a711624da07, type: 3}
+  m_selectedIcon: {fileID: 2800000, guid: ea925dc0d6cc3331a0ae41212050f101, type: 3}
+  m_swapIcon: {fileID: 2800000, guid: 0f4c8b9d29bbc9416615a5ea702c1b4c, type: 3}
