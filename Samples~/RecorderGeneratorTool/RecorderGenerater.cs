@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEngine.Timeline;
 using UnityEngine.Recorder;
 using UnityEditor.Recorder.Timeline;
-using Sirenix.OdinInspector;
+//using Sirenix.OdinInspector;
 using UnityEngine.Playables;
 using UnityEditor.Recorder;
 using UnityEditor.Presets;
-using Kinogoblin;
+using Kinogoblin.Editor;
 
 namespace UnityEditor.Recorder.Timeline
 {
@@ -17,6 +17,8 @@ namespace UnityEditor.Recorder.Timeline
     {
         [SerializeField] Preset preset;
         [SerializeField] string prefix;
+        [SerializeField]  double gap = 5f;
+        
         private List<TimelineClip> _animationClips = new List<TimelineClip>();
         private RecorderTrack _recorderTrack;
         private List<RecorderSettings> recorderSettings = new List<RecorderSettings>();
@@ -24,7 +26,8 @@ namespace UnityEditor.Recorder.Timeline
 
         private TrackAsset parent;
 
-        [Button]
+        //[Button]
+        [ContextMenu("GenerateAssets")]
         public void GeneratedRecorderAssets()
         {
             _recorderTrack = new RecorderTrack();
@@ -50,11 +53,29 @@ namespace UnityEditor.Recorder.Timeline
                 if (_animationTrack)
                 {
                     Debug.Log(rootTrack.name);
+                    var trackClips = rootTrack.GetClips();
+                    
                     foreach (var clip in rootTrack.GetClips())
                     {
+                        
                         _animationClips.Add(clip);
+                        
+
+                    }
+
+                    for (int i = 0; i < _animationClips.Count-1; i++)
+                    {
+                        TimelineClip currClip = _animationClips[i];
+                        TimelineClip nextClip = _animationClips[i+1];
+                        double temp = nextClip.start - currClip.end;
+                        
+                        if (temp <= 0)
+                        {
+                            nextClip.start =currClip.end + gap;
+                        }
                     }
                     asset.CreateTrack(_recorderTrack.GetType(), null, "GeneratedRecorder");
+                    
                 }
             }
 
@@ -66,6 +87,9 @@ namespace UnityEditor.Recorder.Timeline
                 {
                     foreach (var clip in _animationClips)
                     {
+                        
+                        
+                        
                         var recorderClip = rootTrack.CreateClip<RecorderClip>();
 
                         RecorderClip recorderClipAsset = recorderClip.asset as RecorderClip;

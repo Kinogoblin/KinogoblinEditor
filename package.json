@@ -26,6 +26,11 @@
       "path": "Samples~/RecorderGeneratorTool"
     },
     {
+      "displayName": "Sprite Changer",
+      "description": "Script which changes the texture of the specified parameter by checking it from the spriterendrer. Allows you to animate the sprite renderer, but change the texture in the material, thus animating the material conveniently and flexibly.",
+      "path": "Samples~/SpriteChanger"
+    },
+    {
       "displayName": "CustomImportProcessor",
       "description": "Methods for get custom info from models.",
       "path": "Samples~/CameraExtraTool"
