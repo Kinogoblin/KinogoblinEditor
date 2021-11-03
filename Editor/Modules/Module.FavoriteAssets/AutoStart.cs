@@ -26,7 +26,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         {
             //Unsubscribe
             EditorApplication.update -= OnEditorUpdateDelegate;
-
+            
             m_iconFavorite = ConfigData.Instance.FavoriteMarkerIcon;
 
             //Autostart window first time

@@ -25,7 +25,6 @@ namespace Kinogoblin.Editor
 
 
         public static Color hierarchyColor = new Color(0.5f, 0, 1);
-
         public static GUIStyle buttonStyle;
         public static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
         public static GUIStyle headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
@@ -38,14 +37,13 @@ namespace Kinogoblin.Editor
             ScriptableObject scriptableObj = settings;
             SerializedObject serialObj = new SerializedObject(scriptableObj);
             SerializedProperty serialProp = serialObj.FindProperty("customHierarchy");
-
+            SerializedProperty gameObjectsWithMissingScripts = serialObj.FindProperty("GOWithMissingScripts");
             ///////////////
             GUILayout.Box("COLOR SETTINGS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
             GUILayout.Space(10f);
 
             EditorGUILayout.PropertyField(serialProp, true);
-            serialObj.ApplyModifiedProperties();
 
             GUILayout.Space(10f);
 
@@ -66,9 +64,32 @@ namespace Kinogoblin.Editor
 
             GUILayout.Space(10f);
 
+            // if (GUILayout.Button("Find All Missing Scripts Objects"))
+            //     CleanupMissingScripts();
+
+            if (GUILayout.Button("Open manifest file"))
+            {
+                if (File.Exists(Path.GetFullPath("Packages/manifest.json")))
+                {
+                    Application.OpenURL(Path.GetFullPath("Packages/manifest.json"));
+                }
+            }
+
+            GUILayout.Space(10f);
+
+            if (GUILayout.Button("Open packages-lock file"))
+            {
+                if (File.Exists(Path.GetFullPath("Packages/packages-lock.json")))
+                {
+                    Application.OpenURL(Path.GetFullPath("Packages/packages-lock.json"));
+                }
+            }
+
+            GUILayout.Space(10f);
+
+            serialObj.ApplyModifiedProperties();
             settings.customView = EditorGUILayout.Toggle("Custom View", settings.customView);
             settings.debugSend = EditorGUILayout.Toggle("Debug send", settings.debugSend);
-            settings.enableCustomImportProcessor = EditorGUILayout.Toggle("Enable custom import processor", settings.enableCustomImportProcessor);
         }
 
 #if UNITY_2019_1_OR_NEWER
@@ -116,7 +137,64 @@ namespace Kinogoblin.Editor
                         var gameObject = allObjectsinScene[b];
 
                         EditorUtility.DisplayProgressBar("Removing missing script references", $"Inspecting GameObject  {b + 1}/{allObjectsinScene.Count} in active scene \"{scene.name}\"", (float)(b) / allObjectsinScene.Count);
+                        GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gameObject);
+                    }
 
+                    EditorSceneManager.MarkSceneDirty(scene);
+
+                    EditorUtility.ClearProgressBar();
+                }
+
+                EditorUtility.ClearProgressBar();
+            }
+
+            EditorUtility.ClearProgressBar();
+
+            EditorUtility.DisplayDialog("Operation Completed", "Successfully removed missing script references. Please save all currently open scenes to keep these changes persistent", "Ok");
+
+        }
+        static void FindMissingScripts()
+        {
+            int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
+
+            for (int a = 0; a < UnityEngine.SceneManagement.SceneManager.sceneCount; a++)
+            {
+
+                var scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(a);
+
+                var rootGameObjects = scene.GetRootGameObjects();
+
+                if (rootGameObjects != null && rootGameObjects.Length > 0)
+                {
+
+                    List<GameObject> allObjectsinScene = new List<GameObject>();
+
+
+                    EditorUtility.DisplayProgressBar("Preprocessing", $"Fetching GameObjects in active scene \"{scene.name}\"", 0);
+
+                    foreach (var gameObject in rootGameObjects)
+                    {
+                        var childObjects = gameObject.GetComponentsInChildren<Transform>();
+
+                        if (childObjects != null && childObjects.Length > 0)
+                        {
+                            foreach (var obj in childObjects)
+                            {
+                                if (obj != null) { allObjectsinScene.Add(obj.gameObject); }
+                            }
+                        }
+
+                    }
+
+                    EditorUtility.ClearProgressBar();
+
+
+                    for (int b = 0; b < allObjectsinScene.Count; b++)
+                    {
+
+                        var gameObject = allObjectsinScene[b];
+
+                        EditorUtility.DisplayProgressBar("Removing missing script references", $"Inspecting GameObject  {b + 1}/{allObjectsinScene.Count} in active scene \"{scene.name}\"", (float)(b) / allObjectsinScene.Count);
                         GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gameObject);
                     }
 

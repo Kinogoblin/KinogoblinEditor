@@ -863,10 +863,20 @@ namespace Kinogoblin.Editor
             public static void CreateGroup()
             {
                 GameObject newGO = new GameObject("Group");
+                newGO.transform.parent = Selection.gameObjects[0].transform.parent;
+                newGO.transform.position = Selection.gameObjects[0].transform.position;
+                newGO.transform.rotation = Selection.gameObjects[0].transform.rotation;
                 foreach (GameObject go in Selection.gameObjects)
                     go.transform.parent = newGO.transform;
                 Selection.activeGameObject = newGO;
                 CenterOnChildren();
+            }
+
+            [MenuItem("Tools/Kinogoblin tools/Shortcuts/Toggle Active #a", false, 4)]
+            public static void ToggleActive()
+            {
+                foreach (GameObject go in Selection.gameObjects)
+                    go.SetActive(!go.activeInHierarchy);
             }
 
             [MenuItem("Tools/Kinogoblin tools/Shortcuts/Center Group on Children", false, 5)]
