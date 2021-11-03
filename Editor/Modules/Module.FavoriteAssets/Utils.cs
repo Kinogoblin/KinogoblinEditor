@@ -41,11 +41,15 @@ namespace Kinogoblin.Editor.FavoriteAssets
             if (string.IsNullOrEmpty(parentDir))
                 parentDir = directories.FirstOrDefault<string>(val => val.Contains("Module.FavoriteAssets"));
 
-            string relativePath = "Assets/Resources";
-            
+            string relativePath = "Assets/Plugins/KinogoblinData";
+            if (!AssetDatabase.IsValidFolder("Assets/Plugins"))
+            {
+                AssetDatabase.CreateFolder("Assets", "Plugins");
+                return null;
+            }
             if (!AssetDatabase.IsValidFolder(relativePath))
             {
-                AssetDatabase.CreateFolder("Assets","Resources");
+                AssetDatabase.CreateFolder("Assets/Plugins", "KinogoblinData");
                 return null;
             }
 
