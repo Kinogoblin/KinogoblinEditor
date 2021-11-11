@@ -2,7 +2,7 @@
   "name": "com.kinogoblin.editor",
   "displayName": "Kinogoblin Editor",
   "version": "1.15.3",
-  "unity": "2018 - 2021",
+  "unity": "2020.3",
   "description": "CustomEditor",
   "keywords": [
     "custom",
