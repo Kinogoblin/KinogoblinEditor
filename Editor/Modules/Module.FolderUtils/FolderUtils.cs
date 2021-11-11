@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
 {
@@ -13,8 +14,20 @@ namespace Kinogoblin.Editor
         
         public static void FolderUtilsGUI()
         {
+            ScriptableObject scriptableObj = ProfileData.Instance;
+            SerializedObject serialObj = new SerializedObject(scriptableObj);
+            SerializedProperty serialProp = serialObj.FindProperty("sceneHierarchy");
+            SerializedProperty serialPropFolder = serialObj.FindProperty("customFolderHierarchy");
+
+
             GUILayout.Label("Scene utils", EditorStyles.boldLabel);
+
             GUILayout.Space(10f);
+
+            EditorGUILayout.PropertyField(serialProp, true);
+
+            GUILayout.Space(10f);
+
             if (GUILayout.Button("Create Scene Catalog"))
             {
                 CreateProjectsComponents.SceneCreate();
@@ -22,6 +35,11 @@ namespace Kinogoblin.Editor
             GUILayout.Space(10f);
             GUILayout.Label("Folder utils", EditorStyles.boldLabel);
             GUILayout.Space(10f);
+
+            EditorGUILayout.PropertyField(serialPropFolder, true);
+
+            GUILayout.Space(10f);
+
             _smallSettings = GUILayout.Toggle(_smallSettings, "Choose small variant");
             if (GUILayout.Button("Create Folder Catalog"))
             {
@@ -31,6 +49,8 @@ namespace Kinogoblin.Editor
             {
                 CreateProjectsComponents.FolderCreateUnderActive(CreateProjectsComponents.GetSelectedPathOrFallback(), _smallSettings);
             }
+
+            serialObj.ApplyModifiedProperties();
         }
     }
     static class CreateProjectsComponents
@@ -39,66 +59,46 @@ namespace Kinogoblin.Editor
         public static void SceneCreate()
         {
             Helpful.Debug("Kinogoblin Editor ", " Create scene catalog");
-            var cameraObj = new GameObject("p--Player").transform;
-            var scriptObj = new GameObject("m--Managers").transform;
-            var lightObj = new GameObject("l--Light").transform;
-            var staticObj = new GameObject("e--Enviroment").transform;
-            var dinamicObj = new GameObject("i--Interactable").transform;
-            var audioObj = new GameObject("s--Sound").transform;
-            var timelines = new GameObject("t--Timelines").transform;
+            var sceneGONames = ProfileData.Instance.sceneHierarchy.sceneGONames;
+            foreach (var item in sceneGONames)
+            {
+                var newGO = new GameObject(item).transform;
+            }
         }
 
         [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Folder Catalog #f")]
         public static void FolderCreate()
         {
             Helpful.Debug("Kinogoblin Editor ", " Create folder catalog");
-            string path = "Assets/__Project__";
-
-            if (!Directory.Exists(path))
+            var projectName = ProfileData.Instance.customFolderHierarchy.projectName;
+            var projectFolders = ProfileData.Instance.customFolderHierarchy.paths;
+            if (!Directory.Exists(projectName))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(projectName);
             }
-            Directory.CreateDirectory(path + "/Materials");
-            Directory.CreateDirectory(path + "/Prefabs");
-            Directory.CreateDirectory(path + "/Data");
-            Directory.CreateDirectory(path + "/Scripts");
-            Directory.CreateDirectory(path + "/Scenes");
-            Directory.CreateDirectory(path + "/Trash");
-            Directory.CreateDirectory(path + "/Animations");
-            Directory.CreateDirectory(path + "/Animations/AnimationClips");
-            Directory.CreateDirectory(path + "/Animations/Timelines");
-            Directory.CreateDirectory(path + "/Editor");
-            Directory.CreateDirectory(path + "/Audio");
-            Directory.CreateDirectory(path + "/Models");
-            Directory.CreateDirectory(path + "/Materials/Textures");
-            Directory.CreateDirectory(path + "/Materials/Shaders");
+            foreach (var item in projectFolders)
+            {
+                Directory.CreateDirectory(projectName + item);
+            }
             AssetDatabase.Refresh();
         }
 
         public static void FolderCreate(bool small)
         {
             Helpful.Debug("Kinogoblin Editor ", " Create folder catalog");
-            string path = "Assets/__Project__";
-
-            if (!Directory.Exists(path))
+            var projectName = ProfileData.Instance.customFolderHierarchy.projectName;
+            if (!Directory.Exists(projectName))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(projectName);
             }
-            Directory.CreateDirectory(path + "/Materials");
-            Directory.CreateDirectory(path + "/Prefabs");
-            Directory.CreateDirectory(path + "/Scripts");
-            Directory.CreateDirectory(path + "/Scenes");
-            Directory.CreateDirectory(path + "/Trash");
-            if (!small)
+            var foldersPath = ProfileData.Instance.customFolderHierarchy.paths;
+            if (small)
             {
-                Directory.CreateDirectory(path + "/Animations");
-                Directory.CreateDirectory(path + "/Animations/AnimationClips");
-                Directory.CreateDirectory(path + "/Animations/Timelines");
-                Directory.CreateDirectory(path + "/Editor");
-                Directory.CreateDirectory(path + "/Audio");
-                Directory.CreateDirectory(path + "/Models");
-                Directory.CreateDirectory(path + "/Materials/Textures");
-                Directory.CreateDirectory(path + "/Materials/Shaders");
+                foldersPath = ProfileData.Instance.customFolderHierarchy.pathsSmallVersion;
+            }
+            foreach (var item in foldersPath)
+            {
+                Directory.CreateDirectory(projectName + item);
             }
             AssetDatabase.Refresh();
         }
@@ -110,20 +110,15 @@ namespace Kinogoblin.Editor
             {
                 Directory.CreateDirectory(path);
             }
-            Directory.CreateDirectory(path + "/Prefabs");
-            Directory.CreateDirectory(path + "/Scripts");
-            Directory.CreateDirectory(path + "/Scenes");
-            Directory.CreateDirectory(path + "/Trash");
-            if (!small)
+
+            var foldersPath = ProfileData.Instance.customFolderHierarchy.paths;
+            if (small)
             {
-                Directory.CreateDirectory(path + "/Animations");
-                Directory.CreateDirectory(path + "/Animations/Timelines");
-                Directory.CreateDirectory(path + "/Editor");
-                Directory.CreateDirectory(path + "/Animations/AnimationClips");
-                Directory.CreateDirectory(path + "/Audio");
-                Directory.CreateDirectory(path + "/Models");
-                Directory.CreateDirectory(path + "/Materials");
-                Directory.CreateDirectory(path + "/Scripts/Managers");
+                foldersPath = ProfileData.Instance.customFolderHierarchy.pathsSmallVersion;
+            }
+            foreach (var item in foldersPath)
+            {
+                Directory.CreateDirectory(path + item);
             }
             AssetDatabase.Refresh();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kinogoblin.Editor.FavoriteAssets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Kinogoblin.Editor
         {
             if (Other.debugSend)
             {
-                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message) + normal);
+                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(ProfileData.Instance.debugColor.r * 255f), (byte)(ProfileData.Instance.debugColor.g * 255f), (byte)(ProfileData.Instance.debugColor.b * 255f), message) + normal);
             }
         }
 
@@ -20,7 +21,7 @@ namespace Kinogoblin.Editor
         {
             if (Other.debugSend)
             {
-                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message));
+                UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(ProfileData.Instance.debugColor.r * 255f), (byte)(ProfileData.Instance.debugColor.g * 255f), (byte)(ProfileData.Instance.debugColor.b * 255f), message));
             }
         }
 
@@ -38,7 +39,7 @@ namespace Kinogoblin.Editor
         }
         public static string CustomString(string message)
         {
-            return string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(Other.settings.debugColor.r * 255f), (byte)(Other.settings.debugColor.g * 255f), (byte)(Other.settings.debugColor.b * 255f), message);
+            return string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(ProfileData.Instance.debugColor.r * 255f), (byte)(ProfileData.Instance.debugColor.g * 255f), (byte)(ProfileData.Instance.debugColor.b * 255f), message);
         }
 
         public static void GetListOfAllChilds(Transform parent, List<Transform> list)

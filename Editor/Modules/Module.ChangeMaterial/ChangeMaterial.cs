@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
 {
@@ -23,11 +24,11 @@ namespace Kinogoblin.Editor
         {
             get
             {
-                return Other.settings.pathForMaterials;
+                return ProfileData.Instance.pathForMaterials;
             }
             set
             {
-                Other.settings.pathForMaterials = value;
+                ProfileData.Instance.pathForMaterials = value;
             }
         }
 

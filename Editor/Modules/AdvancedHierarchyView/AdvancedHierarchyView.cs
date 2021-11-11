@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine.Playables;
 using System.Linq;
 using System.Reflection;
+using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
 {
@@ -103,7 +104,7 @@ namespace Kinogoblin.Editor
 
         static void HierarchyOnGUI(int instanceID, Rect selectionRect)
         {
-            if (!Active) return;
+            if (!ProfileData.Instance.customIcons) return;
 
             var fullRect = selectionRect;
             fullRect.xMin = 32;

@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using System.Globalization;
 using UnityEditor;
 using System.IO;
+using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
 {
@@ -37,21 +38,6 @@ namespace Kinogoblin.Editor
         private static GameObject refGameObject = null;
         private static bool changeRendererSettings = true;
         private static bool changeForAllInHierarchy = true;
-
-
-        public static SaveSettings settings
-        {
-            get
-            {
-                if (_dataGameObjectCustomSettings == null)
-                {
-                    _dataGameObjectCustomSettings = EditorSettings.GetSettings();
-                }
-                return _dataGameObjectCustomSettings;
-            }
-        }
-        private static SaveSettings _dataGameObjectCustomSettings;
-
 
         private void OnEnable()
         {
@@ -656,11 +642,11 @@ namespace Kinogoblin.Editor
         {
             get
             {
-                return Other.settings.pathForModels;
+                return ProfileData.Instance.pathForModels;
             }
             set
             {
-                Other.settings.pathForModels = value;
+                ProfileData.Instance.pathForModels = value;
             }
         }
 

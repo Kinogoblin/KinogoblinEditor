@@ -4,9 +4,84 @@ using UnityEditor;
 using System;
 using System.Linq;
 using UnityEditorInternal;
+using Kinogoblin.Editor;
 
 namespace Kinogoblin.Editor.FavoriteAssets
 {
+    /// <summary> Kinogoblin Editor Settings
+
+    [Serializable]
+    public class HierarchyCustomColors
+    {
+        public string prefix = "---";
+        public Color color = new Color(0.5f, 0, 1);
+        public Color colorDisable = new Color(0, 0, 0, 0.5f);
+        public GUIStyle style;
+    }
+    [Serializable]
+    public class SceneHierarchy
+    {
+        public List<string> sceneGONames = new List<string>()
+        {
+             "p--Player",
+             "m--Managers",
+             "l--Light",
+             "e--Enviroment",
+             "i--Interactable",
+             "s--Sound",
+             "t--Timelines",
+        };
+    }
+
+    [Serializable]
+    public class ProjectFolderHierarchy
+    {
+        public string projectName = "Assets/__Project__";
+        public List<string> paths = new List<string>()
+        {
+             "/Materials",
+             "/Prefabs",
+             "/Data",
+             "/Prototypes",
+             "/Scripts",
+             "/Scenes",
+             "/Trash",
+             "/Animations",
+             "/Animations/AnimationClips",
+             "/Animations/Timelines",
+             "/Editor",
+             "/Audio",
+             "/Models",
+             "/Textures",
+             "/Shaders",
+        };
+
+        public List<string> pathsSmallVersion = new List<string>()
+        {
+             "/Materials",
+             "/Prefabs",
+             "/Scripts",
+             "/Scenes",
+             "/Trash",
+             "/Animations",
+             "/Models",
+             "/Textures",
+        };
+    }
+    [Serializable]
+    public class GOWithMissingScripts
+    {
+        public List<GameObject> gOWithMissingScripts = new List<GameObject>();
+    }
+
+    [Serializable]
+    public class GameObjectCustomSettings
+    {
+        public GameObject renderer;
+    }
+
+    /// </summary>
+
     [System.Serializable]
     public class ProfileData : ScriptableObject
     {
@@ -22,6 +97,30 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
         [SerializeField]
         private SceneFavoriteManager m_sceneFavorites = new SceneFavoriteManager();
+
+        [Space(20)]
+        [Header("Kinogoblin Editor settings")]
+        ///////////////////////////////////
+        [SerializeField]
+        public HierarchyCustomColors[] customHierarchy = new HierarchyCustomColors[1];
+        public ProjectFolderHierarchy customFolderHierarchy;
+        public SceneHierarchy sceneHierarchy;
+        public bool customizeHierarchy = true;
+
+        public Color debugColor = new Color(0.5f, 0, 1);
+
+        public bool customView = true;
+        public bool customIcons = true;
+        public bool debugSend = true;
+        public string pathForModels = "Assets/__Project__/Models/MeshAssets/";
+        public string pathForMaterials = "Assets/__Project__/Materials/";
+
+        public GameObjectCustomSettings gameObjectCustomSettings;
+        public MeshRenderer renderer;
+        public bool enableCustomImportProcessor = false;
+        ///////////////////////////////////
+
+
 
         private static ProfileData m_instance;
         private Dictionary<string, AssetCache> m_favoriteCache;

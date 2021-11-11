@@ -580,6 +580,6 @@ MonoBehaviour:
   pathForModels: Assets/__Project__/Models/MeshAssets/
   pathForMaterials: Assets/__Project__/Materials/
   gameObjectCustomSettings:
-    renderer: {fileID: 3027554877427853619, guid: 42c76b9202b1ee8498656f1e2024d71a,
-      type: 3}
+    renderer: {fileID: 0}
   renderer: {fileID: 0}
+  enableCustomImportProcessor: 0

@@ -4,26 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
 {
 
     public class Other
     {
-        public static SaveSettings settings
-        {
-            get
-            {
-                if (_dataSettings == null)
-                {
-                    _dataSettings = EditorSettings.GetSettings();
-                }
-                return _dataSettings;
-            }
-        }
-        private static SaveSettings _dataSettings;
-
-
         public static Color hierarchyColor = new Color(0.5f, 0, 1);
         public static GUIStyle buttonStyle;
         public static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
@@ -34,7 +21,7 @@ namespace Kinogoblin.Editor
 
         public static void OtherGUI()
         {
-            ScriptableObject scriptableObj = settings;
+            ScriptableObject scriptableObj = ProfileData.Instance;
             SerializedObject serialObj = new SerializedObject(scriptableObj);
             SerializedProperty serialProp = serialObj.FindProperty("customHierarchy");
             SerializedProperty gameObjectsWithMissingScripts = serialObj.FindProperty("GOWithMissingScripts");
@@ -47,7 +34,7 @@ namespace Kinogoblin.Editor
 
             GUILayout.Space(10f);
 
-            settings.debugColor = EditorGUILayout.ColorField("Color debug", settings.debugColor);
+            ProfileData.Instance.debugColor = EditorGUILayout.ColorField("Color debug", ProfileData.Instance.debugColor);
 
             if (GUILayout.Button("Test Debug color"))
                 Helpful.Debug("Hello from Kinogoblin!");
@@ -88,8 +75,9 @@ namespace Kinogoblin.Editor
             GUILayout.Space(10f);
 
             serialObj.ApplyModifiedProperties();
-            settings.customView = EditorGUILayout.Toggle("Custom View", settings.customView);
-            settings.debugSend = EditorGUILayout.Toggle("Debug send", settings.debugSend);
+            ProfileData.Instance.customView = EditorGUILayout.Toggle("Custom View", ProfileData.Instance.customView);
+            ProfileData.Instance.customIcons = EditorGUILayout.Toggle("Custom Icons", ProfileData.Instance.customIcons);
+            ProfileData.Instance.debugSend = EditorGUILayout.Toggle("Debug send", ProfileData.Instance.debugSend);
         }
 
 #if UNITY_2019_1_OR_NEWER
@@ -261,12 +249,13 @@ namespace Kinogoblin.Editor
 
         static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
+            if (!ProfileData.Instance.customView) return;
             var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-            if (Other.settings != null)
+            if (ProfileData.Instance != null)
             {
-                if (gameObject != null && Other.settings.customizeHierarchy)
+                if (gameObject != null && ProfileData.Instance.customizeHierarchy)
                 {
-                    foreach (var item in Other.settings.customHierarchy)
+                    foreach (var item in ProfileData.Instance.customHierarchy)
                     {
                         if (gameObject.name.StartsWith(item.prefix, System.StringComparison.Ordinal) && item.prefix != "")
                         {

@@ -109,17 +109,5 @@
             m_Logo = (Texture2D) AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
             m_Logo.Apply();
         }
-
-        public static SaveSettings GetSettings()
-        {
-            if (AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings)) == null)
-            {
-                settingsPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Data/Editor Data.asset";
-            }
-
-            var s = (SaveSettings) AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings));
-
-            return s;
-        }
     }
 }
