@@ -98,8 +98,6 @@ namespace Kinogoblin.Editor.FavoriteAssets
         [SerializeField]
         private SceneFavoriteManager m_sceneFavorites = new SceneFavoriteManager();
 
-        [Space(20)]
-        [Header("Kinogoblin Editor settings")]
         ///////////////////////////////////
         [SerializeField]
         public HierarchyCustomColors[] customHierarchy = new HierarchyCustomColors[1];

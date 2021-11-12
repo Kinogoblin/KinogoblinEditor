@@ -61,6 +61,17 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 return null;
             }
 
+            string settingsPath = "Packages/com.kinogoblin.editor/Editor/Data/Editor Data.asset";
+
+            if (AssetDatabase.LoadAssetAtPath(settingsPath, typeof(ProfileData)) == null)
+            {
+                settingsPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Data/Editor Data.asset";
+            }
+
+            var s = (ProfileData)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(ProfileData));
+
+            newUserFav.customHierarchy = s.customHierarchy;
+
             string finalAssetName = userDir + "/ Profile_" + userName + ".asset";
 
             string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(finalAssetName);

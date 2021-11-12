@@ -108,6 +108,6 @@
             m_Logo = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
             m_Logo = (Texture2D) AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
             m_Logo.Apply();
-        }
+        }      
     }
 }
