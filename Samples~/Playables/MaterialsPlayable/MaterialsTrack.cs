@@ -11,6 +11,9 @@
     [TrackClipType(typeof(MaterialsClip))]
     public class MaterialsTrack : TrackAsset
     {
-        
+        public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
+        {
+            return ScriptPlayable<MaterialsMixer>.Create(graph, inputCount);
+        }
     }
 }

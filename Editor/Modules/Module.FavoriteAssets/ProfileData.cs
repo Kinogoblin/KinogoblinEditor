@@ -100,7 +100,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
         ///////////////////////////////////
         [SerializeField]
-        public HierarchyCustomColors[] customHierarchy = new HierarchyCustomColors[1];
+        public List<HierarchyCustomColors> customHierarchy = new List<HierarchyCustomColors>();
         public ProjectFolderHierarchy customFolderHierarchy;
         public SceneHierarchy sceneHierarchy;
         public bool customizeHierarchy = true;
