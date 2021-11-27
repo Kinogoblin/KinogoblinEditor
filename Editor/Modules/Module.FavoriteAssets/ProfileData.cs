@@ -109,6 +109,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
         public bool customView = true;
         public bool customIcons = true;
+		public bool dragHanglerEnable = true;
         public bool debugSend = true;
         public string pathForModels = "Assets/__Project__/Models/MeshAssets/";
         public string pathForMaterials = "Assets/__Project__/Materials/";

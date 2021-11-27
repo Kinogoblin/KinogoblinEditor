@@ -249,10 +249,10 @@ namespace Kinogoblin.Editor
 
         static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
         {
-            if (!ProfileData.Instance.customView) return;
-            var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (ProfileData.Instance != null)
-            {
+			{
+				if (!ProfileData.Instance.customView) return;
+				var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
                 if (gameObject != null && ProfileData.Instance.customizeHierarchy)
                 {
                     foreach (var item in ProfileData.Instance.customHierarchy)
