@@ -71,6 +71,11 @@
       "path": "Samples~/Playables/SceneAdditiveLoader"
     },
     {
+      "displayName": "Scene Activation Track",
+      "description": "Playable for activation Scene.",
+      "path": "Samples~/Playables/SceneActivationTrack"
+    },
+    {
       "displayName": "SkyBox Playable",
       "description": "Playble for change skybox material (not properties).",
       "path": "Samples~/Playables/SkyBoxPlayable"
