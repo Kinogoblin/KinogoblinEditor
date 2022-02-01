@@ -12,6 +12,7 @@
         SettingsForGameobject,
         ChangeMaterial,
         AddOtherPackages,
+        Timeline,
         Custom
     }
 
@@ -80,6 +81,9 @@
                     break;
                 case TypesOfSettings.Custom:
                     Other.OtherGUI();
+                    break;
+                case TypesOfSettings.Timeline:
+                    Timeline.TimelineUtilities.TimelineUtilitiesGUI();
                     break;
                 default:
                     ChangeMaterial.ChangeMaterialGUI();

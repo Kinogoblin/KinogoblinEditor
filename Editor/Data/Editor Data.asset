@@ -15,7 +15,15 @@ MonoBehaviour:
   m_userName: User
   m_favorites:
     m_IsDirty: 0
-    m_favoritesKeyed: []
+    m_favoritesKeyed:
+    - m_key: UnityEditor.SceneAsset
+      m_icon: {fileID: 985423054452513129, guid: 0000000000000000d000000000000000,
+        type: 0}
+      m_favorites:
+      - 52a38cc92cedcbf4a943bb45858680ea
+      - 2bb21b8ea29347f418d170d0170ac92e
+      - 9805678f4f9309642a21c43d4ef00276
+      m_isFolder: 0
   m_sceneFavorites:
     m_sceneFavorites: []
   customHierarchy:
@@ -129,6 +137,7 @@ MonoBehaviour:
   debugColor: {r: 0.5, g: 0, b: 1, a: 1}
   customView: 1
   customIcons: 1
+  dragHanglerEnable: 1
   debugSend: 1
   pathForModels: Assets/__Project__/Models/MeshAssets/
   pathForMaterials: Assets/__Project__/Materials/
