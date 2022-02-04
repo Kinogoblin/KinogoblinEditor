@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Kinogoblin.Runtime;
 using Kinogoblin;
 
 namespace Kinogoblin.Editor

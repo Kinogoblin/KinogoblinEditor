@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Kinogoblin
+namespace Kinogoblin.Runtime
 {
     [ExecuteAlways]
     public class Folder : MonoBehaviour
