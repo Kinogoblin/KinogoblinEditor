@@ -862,7 +862,10 @@ namespace Kinogoblin.Editor
             public static void ToggleActive()
             {
                 foreach (GameObject go in Selection.gameObjects)
+                {
                     go.SetActive(!go.activeInHierarchy);
+                    EditorUtility.SetDirty(go);
+                }
             }
 
             [MenuItem("Tools/Kinogoblin tools/Shortcuts/Center Group on Children", false, 5)]

@@ -16,6 +16,13 @@ MonoBehaviour:
   m_favorites:
     m_IsDirty: 0
     m_favoritesKeyed:
+    - m_key: UnityEngine.GameObject
+      m_icon: {fileID: -7606759526039521141, guid: 0000000000000000d000000000000000,
+        type: 0}
+      m_favorites:
+      - afe89e60e06fe43e6b558ab480dbc64c
+      - a4a5b086a7d6046ffa24969b63a810b0
+      m_isFolder: 0
     - m_key: UnityEditor.SceneAsset
       m_icon: {fileID: 985423054452513129, guid: 0000000000000000d000000000000000,
         type: 0}
@@ -114,6 +121,7 @@ MonoBehaviour:
     - /Audio
     - /Models
     - /Textures
+    - /Shaders
     - /Shaders
     pathsSmallVersion:
     - /Materials
