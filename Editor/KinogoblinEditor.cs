@@ -27,7 +27,7 @@
         private TypesOfSettings type;
         private Vector2 scrollPos = Vector2.zero;
         private string[] varaints = new string[0];
-        private int selectedVariant = 0;
+        // private int selectedVariant = 0;
 
         void OnGUI()
         {

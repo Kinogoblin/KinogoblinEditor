@@ -16,7 +16,7 @@ namespace Kinogoblin.Editor
         private static string GENERATED_COLLIDER_NAME = "__GeneratedCollider";
         private static string GENERATED_NAVMESH_OBSTACLE_NAME = "__GeneratedNavMeshObstacle";
 
-        private static string UNDO_CREATE_PIVOT_REFERENCE = "Create Pivot Reference";
+        // private static string UNDO_CREATE_PIVOT_REFERENCE = "Create Pivot Reference";
         private static string UNDO_ADJUST_PIVOT = "Move Pivot";
         private static string UNDO_SAVE_MODEL_AS = "Save Model As";
 

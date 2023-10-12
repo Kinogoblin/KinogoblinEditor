@@ -7,6 +7,7 @@ namespace Kinogoblin.Editor
     public static class LayoutLoader
 	{
 		static string layoutPath = EditorUtilities.packagePathRoot + "/Editor/Modules/Module.Layout/LayoutConfigs/Kinogoblin.wlt";
+		static string editorDebugLayoutPath = Application.dataPath + "/KinogoblinEditor/Editor/Modules/Module.Layout/LayoutConfigs/Kinogoblin.wlt";
 
 		[MenuItem("Tools/Kinogoblin tools/Load Kinogoblin Layout", false, -1)]
 		public static void LoadKinogoblinLayout()
@@ -18,7 +19,16 @@ namespace Kinogoblin.Editor
 			}
 			else
 			{
-				Debug.LogWarning("Layout not loaded. Layout file missing at: " + layoutPath);
+				Debug.Log($"path : {editorDebugLayoutPath}");
+				if (System.IO.File.Exists(editorDebugLayoutPath))
+				{
+					EditorUtility.LoadWindowLayout(editorDebugLayoutPath);
+					Debug.Log("Layout Successfully Loaded");
+				}
+				else
+				{
+					Debug.LogWarning("Layout not loaded. Layout file missing at: " + layoutPath);
+				}
 			}
 		}
 
