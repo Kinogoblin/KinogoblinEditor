@@ -20,16 +20,16 @@ namespace Kinogoblin.Editor.Timeline
 
         public static void TimelineUtilitiesGUI()
         {
-            GUILayout.Box("SETTINGS FOR GO", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
-
-            GUILayout.Space(10f);
-
             if (buttonStyle == null)
             {
                 buttonStyle = new GUIStyle(GUI.skin.button) { richText = true };
                 headerStyle = new GUIStyle(GUI.skin.box)
                     { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
             }
+            
+            GUILayout.Box("SETTINGS FOR TIMELINE", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
+
+            GUILayout.Space(10f);
 
             Transform selection = Selection.activeTransform;
             if (!IsNull(selection))

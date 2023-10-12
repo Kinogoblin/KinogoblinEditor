@@ -13,6 +13,7 @@
         ChangeMaterial,
         AddOtherPackages,
         Timeline,
+        SceneFastTravel,
         Custom
     }
 
@@ -84,6 +85,9 @@
                     break;
                 case TypesOfSettings.Timeline:
                     Timeline.TimelineUtilities.TimelineUtilitiesGUI();
+                    break;
+                case TypesOfSettings.SceneFastTravel:
+                    SceneFastTravel.SceneFastTravelGUI();
                     break;
                 default:
                     ChangeMaterial.ChangeMaterialGUI();

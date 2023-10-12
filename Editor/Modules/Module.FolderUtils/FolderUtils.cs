@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Security.Policy;
 using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
@@ -10,10 +11,12 @@ namespace Kinogoblin.Editor
     public class FolderUtils : EditorWindow
     {
         private static bool _smallSettings = false;
+        private static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
         private static ScriptableObject scriptableObj;
         private static SerializedObject serialObj;
         private static SerializedProperty serialProp;
         private static SerializedProperty serialPropFolder;
+        private static GUIStyle headerStyle;
 
         public static void FolderUtilsGUI()
         {
@@ -24,8 +27,14 @@ namespace Kinogoblin.Editor
                 serialProp = serialObj.FindProperty("sceneHierarchy");
                 serialPropFolder = serialObj.FindProperty("customFolderHierarchy");
             }
-
-            GUILayout.Label("Scene utils", EditorStyles.boldLabel);
+            
+            if (headerStyle == null)
+            {
+                headerStyle = new GUIStyle(GUI.skin.box)
+                    { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
+            }
+            
+            GUILayout.Box("SCENE AND FOLDER UTILS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
             GUILayout.Space(10f);
 

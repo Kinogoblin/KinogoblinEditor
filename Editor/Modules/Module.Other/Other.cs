@@ -15,7 +15,7 @@ namespace Kinogoblin.Editor
 		public static Color hierarchyColor = new Color(0.5f, 0, 1);
 		public static GUIStyle buttonStyle;
 		public static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
-		public static GUIStyle headerStyle = new GUIStyle(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
+		public static GUIStyle headerStyle = new(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
 
 		public static bool customView = true;
 		public static bool debugSend = true;
@@ -33,7 +33,11 @@ namespace Kinogoblin.Editor
 				serialProp = serialObj.FindProperty("customHierarchy");
 				gameObjectsWithMissingScripts = serialObj.FindProperty("GOWithMissingScripts");
 			}
-			
+			if (headerStyle == null)
+			{
+				headerStyle = new GUIStyle(GUI.skin.box)
+					{ alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
+			}
 			///////////////
 			GUILayout.Box("COLOR SETTINGS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
