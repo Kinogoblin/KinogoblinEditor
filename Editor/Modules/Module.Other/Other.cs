@@ -19,19 +19,31 @@ namespace Kinogoblin.Editor
 
 		public static bool customView = true;
 		public static bool debugSend = true;
+		private static ScriptableObject scriptableObj;
+		private static SerializedObject serialObj;
+		private static SerializedProperty serialProp;
+		private static SerializedProperty gameObjectsWithMissingScripts;
 
 		public static void OtherGUI()
 		{
-			ScriptableObject scriptableObj = ProfileData.Instance;
-			SerializedObject serialObj = new SerializedObject(scriptableObj);
-			SerializedProperty serialProp = serialObj.FindProperty("customHierarchy");
-			SerializedProperty gameObjectsWithMissingScripts = serialObj.FindProperty("GOWithMissingScripts");
+			if (scriptableObj == null)
+			{
+				scriptableObj = ProfileData.Instance;
+				serialObj = new SerializedObject(scriptableObj);
+				serialProp = serialObj.FindProperty("customHierarchy");
+				gameObjectsWithMissingScripts = serialObj.FindProperty("GOWithMissingScripts");
+			}
+			
 			///////////////
 			GUILayout.Box("COLOR SETTINGS", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
 			GUILayout.Space(10f);
 
 			EditorGUILayout.PropertyField(serialProp, true);
+			//
+			// GUILayout.Space(10f);
+			//
+			// EditorGUILayout.PropertyField(gameObjectsWithMissingScripts, true);
 
 			GUILayout.Space(10f);
 
@@ -80,14 +92,14 @@ namespace Kinogoblin.Editor
 
 			GUILayout.Space(10f);
 
-			serialObj.ApplyModifiedProperties();
 			ProfileData.Instance.customView = EditorGUILayout.Toggle("Custom View", ProfileData.Instance.customView);
 			ProfileData.Instance.customIcons = EditorGUILayout.Toggle("Custom Icons", ProfileData.Instance.customIcons);
 			ProfileData.Instance.debugSend = EditorGUILayout.Toggle("Debug send", ProfileData.Instance.debugSend);
+			serialObj.ApplyModifiedProperties();
 		}
 
 #if UNITY_2019_1_OR_NEWER
-		[MenuItem("Tools/Kinogoblin tools/Cleanup Missing Scripts")]
+		[MenuItem("Tools/Kinogoblin tools/Recompile Assemblies")]
 		static void RecompileAssemblies()
 		{
 			CompilationPipeline.RequestScriptCompilation();
@@ -212,6 +224,13 @@ namespace Kinogoblin.Editor
 		}
 
 #endif
+		public static void UpdateScriptableObj()
+		{
+			scriptableObj = ProfileData.Instance;
+			serialObj = new SerializedObject(scriptableObj);
+			serialProp = serialObj.FindProperty("customHierarchy");
+			gameObjectsWithMissingScripts = serialObj.FindProperty("GOWithMissingScripts");
+		}
 	}
 #if UNITY_EDITOR
 	public class EditorExtensions

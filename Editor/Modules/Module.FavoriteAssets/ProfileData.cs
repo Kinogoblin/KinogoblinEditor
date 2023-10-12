@@ -18,6 +18,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         public Color colorDisable = new Color(0, 0, 0, 0.5f);
         public GUIStyle style;
     }
+    
     [Serializable]
     public class SceneHierarchy
     {

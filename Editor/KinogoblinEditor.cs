@@ -106,12 +106,14 @@
         {
             if (AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D)) == null)
             {
-                logoPath = "Assets/GitKinogoblin/KinogoblinEditor/Editor/Icons/Logo.png";
+                logoPath = "Assets/KinogoblinEditor/Editor/Icons/Logo.png";
             }
 
             m_Logo = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
             m_Logo = (Texture2D) AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
             m_Logo.Apply();
+            Other.UpdateScriptableObj();
+            FolderUtils.UpdateScriptableObj();
         }
         public static SaveSettings GetSettings()
         {

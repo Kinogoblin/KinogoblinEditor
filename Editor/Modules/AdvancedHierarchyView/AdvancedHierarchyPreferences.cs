@@ -12,7 +12,7 @@ namespace Kinogoblin.Editor
         [SettingsProvider]
         public static SettingsProvider GetAdvancedHierarchyPreferences()
         {
-            var provider = new SettingsProvider("Preferences/Gameplay Ingredients/Advanced Hierarchy View", SettingsScope.User)
+            var provider = new SettingsProvider("Project/KinogoblinEditor/Advanced Hierarchy View", SettingsScope.Project)
             {
                 label = "Advanced Hierarchy Options",
                 guiHandler = OnGUI
@@ -21,8 +21,8 @@ namespace Kinogoblin.Editor
         }
 
         static Dictionary<Type, bool> s_CachedVisibility;
-        static readonly string componentPrefix = "GameplayIngredients.HierarchyHints.";
-        static readonly string staticPref = "GameplayIngredients.HierarchyHints.Static";
+        static readonly string componentPrefix = "KinogoblinEditor.HierarchyHints.";
+        static readonly string staticPref = "KinogoblinEditor.HierarchyHints.Static";
 
         [InitializeOnLoadMethod]
         static void Initialize()

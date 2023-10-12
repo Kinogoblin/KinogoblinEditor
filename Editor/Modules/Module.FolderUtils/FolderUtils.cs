@@ -7,18 +7,23 @@ using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin.Editor
 {
-
     public class FolderUtils : EditorWindow
     {
         private static bool _smallSettings = false;
-        
+        private static ScriptableObject scriptableObj;
+        private static SerializedObject serialObj;
+        private static SerializedProperty serialProp;
+        private static SerializedProperty serialPropFolder;
+
         public static void FolderUtilsGUI()
         {
-            ScriptableObject scriptableObj = ProfileData.Instance;
-            SerializedObject serialObj = new SerializedObject(scriptableObj);
-            SerializedProperty serialProp = serialObj.FindProperty("sceneHierarchy");
-            SerializedProperty serialPropFolder = serialObj.FindProperty("customFolderHierarchy");
-
+            if (scriptableObj == null)
+            {
+                scriptableObj = ProfileData.Instance;
+                serialObj = new SerializedObject(scriptableObj);
+                serialProp = serialObj.FindProperty("sceneHierarchy");
+                serialPropFolder = serialObj.FindProperty("customFolderHierarchy");
+            }
 
             GUILayout.Label("Scene utils", EditorStyles.boldLabel);
 
@@ -32,11 +37,13 @@ namespace Kinogoblin.Editor
             {
                 CreateProjectsComponents.SceneCreate();
             }
+
             GUILayout.Space(10f);
             GUILayout.Label("Folder utils", EditorStyles.boldLabel);
             GUILayout.Space(10f);
 
             EditorGUILayout.PropertyField(serialPropFolder, true);
+            serialObj.ApplyModifiedProperties();
 
             GUILayout.Space(10f);
 
@@ -45,14 +52,25 @@ namespace Kinogoblin.Editor
             {
                 CreateProjectsComponents.FolderCreate(_smallSettings);
             }
+
             if (GUILayout.Button("Create Folder Catalog under active folder"))
             {
-                CreateProjectsComponents.FolderCreateUnderActive(CreateProjectsComponents.GetSelectedPathOrFallback(), _smallSettings);
+                CreateProjectsComponents.FolderCreateUnderActive(CreateProjectsComponents.GetSelectedPathOrFallback(),
+                    _smallSettings);
             }
 
             serialObj.ApplyModifiedProperties();
         }
+
+        public static void UpdateScriptableObj()
+        {
+            scriptableObj = ProfileData.Instance;
+            serialObj = new SerializedObject(scriptableObj);
+            serialProp = serialObj.FindProperty("sceneHierarchy");
+            serialPropFolder = serialObj.FindProperty("customFolderHierarchy");
+        }
     }
+
     static class CreateProjectsComponents
     {
         [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Scene Catalog")]
@@ -76,10 +94,12 @@ namespace Kinogoblin.Editor
             {
                 Directory.CreateDirectory(projectName);
             }
+
             foreach (var item in projectFolders)
             {
                 Directory.CreateDirectory(projectName + item);
             }
+
             AssetDatabase.Refresh();
         }
 
@@ -91,15 +111,18 @@ namespace Kinogoblin.Editor
             {
                 Directory.CreateDirectory(projectName);
             }
+
             var foldersPath = ProfileData.Instance.customFolderHierarchy.paths;
             if (small)
             {
                 foldersPath = ProfileData.Instance.customFolderHierarchy.pathsSmallVersion;
             }
+
             foreach (var item in foldersPath)
             {
                 Directory.CreateDirectory(projectName + item);
             }
+
             AssetDatabase.Refresh();
         }
 
@@ -116,10 +139,12 @@ namespace Kinogoblin.Editor
             {
                 foldersPath = ProfileData.Instance.customFolderHierarchy.pathsSmallVersion;
             }
+
             foreach (var item in foldersPath)
             {
                 Directory.CreateDirectory(path + item);
             }
+
             AssetDatabase.Refresh();
         }
 
@@ -136,6 +161,7 @@ namespace Kinogoblin.Editor
                     break;
                 }
             }
+
             return path;
         }
     }

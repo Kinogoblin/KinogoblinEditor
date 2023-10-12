@@ -70,9 +70,12 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
             var s = (ProfileData)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(ProfileData));
             newUserFav.customHierarchy = new List<HierarchyCustomColors>();
-            foreach (var item in s.customHierarchy)
+            if (s != null)
             {
-                newUserFav.customHierarchy.Add(item);
+                foreach (var item in s.customHierarchy)
+                {
+                    newUserFav.customHierarchy.Add(item);
+                }
             }
 
             string finalAssetName = userDir + "/ Profile_" + userName + ".asset";

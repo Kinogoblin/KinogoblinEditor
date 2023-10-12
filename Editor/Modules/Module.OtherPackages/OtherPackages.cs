@@ -45,8 +45,8 @@ namespace Kinogoblin.Editor
 
             if (GUILayout.Button("Add Naughtyattributes"))
                 AddNaughtyattributes();
-            if (GUILayout.Button("Add GameIngredients"))
-                AddGameIngredients();
+            if (GUILayout.Button("Add UnityAssetUsageDetector"))
+                AddUnityAssetUsageDetector();
             if (GUILayout.Button("Add RuntimeInspector"))
                 AddRuntimeInspector();
             if (GUILayout.Button("Add IngameDebugConsole"))
@@ -128,10 +128,10 @@ namespace Kinogoblin.Editor
             AddNewPackageForUPM("com.dbrizov.naughtyattributes", "com.dbrizov.naughtyattributes");
         }
 
-        static void AddGameIngredients()
+        static void AddUnityAssetUsageDetector()
         {
             AddOpenUPM();
-            AddNewPackageForUPM("net.peeweek.gameplay-ingredients", "net.peeweek.gameplay-ingredients");
+            AddNewPackageForUPM("com.yasirkula.assetusagedetector", "com.yasirkula.assetusagedetector");
         }
 
         static void AddRuntimeInspector()

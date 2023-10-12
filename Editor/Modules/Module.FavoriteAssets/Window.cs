@@ -437,14 +437,14 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
             position.x = position.x - 18;
             position.width = 20;
-            if (GUI.Button(position, "", GUI.skin.FindStyle("ToolbarSeachTextFieldPopup")))
+            if (GUI.Button(position, "", GUI.skin.FindStyle("ToolbarSearchTextFieldPopup")))
             {
                 contextMenu.DropDown(position);
             }
 
-            position = GUILayoutUtility.GetRect(10, 10, GUI.skin.FindStyle("ToolbarSeachCancelButton"));
+            position = GUILayoutUtility.GetRect(10, 10, GUI.skin.FindStyle("ToolbarSearchCancelButton"));
             position.x -= 5;
-            if (GUI.Button(position, "", GUI.skin.FindStyle("ToolbarSeachCancelButton")))
+            if (GUI.Button(position, "", GUI.skin.FindStyle("ToolbarSearchCancelButton")))
             {
                 m_favoriteSearchString = string.Empty;
             }
