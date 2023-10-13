@@ -9,37 +9,57 @@ namespace Kinogoblin.Editor
 {
     public class SceneFastTravel : EditorWindow
     {
-        private static List<string> scenePaths = new();
-        private static Vector2 scrollPosition;
+        private static List<string> _scenePaths = new();
+        private static Vector2 _scrollPosition;
         
         public static void SceneFastTravelGUI()
         {
-            if (EditorBuildSettings.scenes.Length != scenePaths.Count)
+            if (EditorBuildSettings.scenes.Length != _scenePaths.Count)
             {
                 GetScenePaths();
             }
+
+            GUILayout.Label("Scenes Setup", EditorStyles.boldLabel);
+
+            if (GUILayout.Button("Create scene setup Collection", GUILayout.Height(20)))
+            {
+                EditorSceneSetup.SaveSetup();
+            }
+            
+            GUILayout.Space(10f);
+            
             GUILayout.Label("Scenes in Build Settings", EditorStyles.boldLabel);
 
-            // scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
-            for (int i = 0; i < scenePaths.Count; i++)
+            GUILayout.Label("Open Scene", EditorStyles.boldLabel);
+            for (int i = 0; i < _scenePaths.Count; i++)
             {
-                if (GUILayout.Button(GetSceneNameFromPath(scenePaths[i]), GUILayout.Height(20)))
+                if (GUILayout.Button($"Open {GetSceneNameFromPath(_scenePaths[i])}", GUILayout.Height(20)))
                 {
-                    OpenScene(scenePaths[i]);
+                    OpenScene(_scenePaths[i]);
                 }
             }
-            // EditorGUILayout.EndScrollView();
+            GUILayout.Label("Add Scene Additional", EditorStyles.boldLabel);
+            for (int i = 0; i < _scenePaths.Count; i++)
+            {
+                if (GUILayout.Button($"Add {GetSceneNameFromPath(_scenePaths[i])}", GUILayout.Height(20)))
+                {
+                    AddScene(_scenePaths[i]);
+                }
+            }
+            EditorGUILayout.EndScrollView();
         }
+
 
         private static void GetScenePaths()
         {
             EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
-            scenePaths = new List<string>();
+            _scenePaths = new List<string>();
 
             for (int i = 0; i < scenes.Length; i++)
             {
-                scenePaths.Add(scenes[i].path);
+                _scenePaths.Add(scenes[i].path);
             }
         }
 
@@ -54,6 +74,11 @@ namespace Kinogoblin.Editor
         private static void OpenScene(string scenePath)
         {
             EditorSceneManager.OpenScene(scenePath);
+        }
+        
+        private static void AddScene(string scenePath)
+        {
+            EditorSceneManager.OpenScene(scenePath,OpenSceneMode.Additive);
         }
     }
 }

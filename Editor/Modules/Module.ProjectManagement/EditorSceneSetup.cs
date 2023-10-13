@@ -9,12 +9,12 @@ using UnityEditor.Callbacks;
 using UnityEditor.ProjectWindowCallback;
 using System.IO;
 
-namespace Kinogoblin.Editor
+namespace Kinogoblin
 {
 	public class EditorSceneSetup : ScriptableObject
     {
         [MenuItem("Tools/Kinogoblin tools/Save Scene Setup As... #%&S", priority = 170)]
-        static void SaveSetup()
+        public static void SaveSetup()
         {
             string path = EditorUtility.SaveFilePanelInProject("Save EditorSceneSetup", "New EditorSceneSetup", "asset", "Save EditorSceneSetup?");
             if(path != string.Empty)
@@ -50,7 +50,7 @@ namespace Kinogoblin.Editor
             return false;
         }
 
-        [MenuItem("Assets/Create/KinogoblinAssets/Editor Scene Setup", priority = 200)]
+        // [MenuItem("Assets/Create/KinogoblinAssets/Editor Scene Setup", priority = 200)]
         static void CreateAsset()
         {
             AssetFactory.CreateAssetInProjectWindow<EditorSceneSetup>("SceneSet Icon", "New SceneSetup.asset");

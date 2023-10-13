@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Kinogoblin.Editor.FavoriteAssets
 {
     
-    [CreateAssetMenu(fileName = "EditorData", menuName = "Kinogoblin/EditorData ", order = 2)]
+    // [CreateAssetMenu(fileName = "EditorData", menuName = "Kinogoblin/EditorData ", order = 2)]
     public class EditorData : ScriptableObject
     {
         public delegate void EditorDataRefreshDelegate();

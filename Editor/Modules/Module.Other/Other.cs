@@ -15,7 +15,20 @@ namespace Kinogoblin.Editor
 		public static Color hierarchyColor = new Color(0.5f, 0, 1);
 		public static GUIStyle buttonStyle;
 		public static readonly GUILayoutOption headerHeight = GUILayout.Height(25);
-		public static GUIStyle headerStyle = new(GUI.skin.box) { alignment = TextAnchor.MiddleCenter };
+
+		public static GUIStyle HeaderStyle
+		{
+			get
+			{
+				if (headerStyle == null)
+				{
+					headerStyle = new GUIStyle(GUI.skin.box)
+						{ alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
+				}
+				return headerStyle;
+			}
+		}
+		public static GUIStyle headerStyle;
 
 		public static bool customView = true;
 		public static bool debugSend = true;

@@ -50,7 +50,7 @@
 
             GUILayout.Space(10f);
 
-            GUILayout.Box("KINOGOBLIN EDITOR", Other.headerStyle, GUILayout.ExpandWidth(true), Other.headerHeight);
+            GUILayout.Box("KINOGOBLIN EDITOR", Other.HeaderStyle, GUILayout.ExpandWidth(true), Other.headerHeight);
 
             EditorGUILayout.BeginHorizontal();
 
