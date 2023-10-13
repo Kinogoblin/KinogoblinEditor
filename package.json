@@ -1,7 +1,7 @@
 {
   "name": "com.kinogoblin.editor",
   "displayName": "Kinogoblin Editor",
-  "version": "1.16.0",
+  "version": "1.16.2",
   "unity": "2018.3",
   "description": "CustomEditor",
   "keywords": [
