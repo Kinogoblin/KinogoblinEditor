@@ -44,10 +44,10 @@ namespace Kinogoblin.Editor.FavoriteAssets
             }
         }
         private const string StyleNameSearchCancelButton = "ToolbarSearchCancelButton";
-        private const string StyleNameSeachCancelButton = "ToolbarSearchCancelButton";
+        private const string StyleNameSeachCancelButton = "ToolbarSeachCancelButton";
         private string _styleSearchCancelButton
         {
-            get
+            get 
             {
                 if (GUI.skin.FindStyle(StyleNameSearchCancelButton) == null)
                 {
