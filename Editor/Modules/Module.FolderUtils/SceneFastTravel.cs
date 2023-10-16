@@ -73,6 +73,7 @@ namespace Kinogoblin.Editor
 
         private static void OpenScene(string scenePath)
         {
+            EditorSceneManager.SaveOpenScenes();
             EditorSceneManager.OpenScene(scenePath);
         }
         

@@ -29,6 +29,34 @@ namespace Kinogoblin.Editor.FavoriteAssets
         //Checking if we have added or pasted new objects through commandname
         private bool m_newObjectAdded;
 
+        private const string StyleNameSearchTextField = "ToolbarSearchTextFieldPopup";
+        private const string StyleNameSeachTextField = "ToolbarSeachTextFieldPopup";
+        private string _styleTextFieldName
+        {
+            get
+            {
+                if (GUI.skin.FindStyle(StyleNameSearchTextField) == null)
+                {
+                    return StyleNameSeachTextField;
+                }
+
+                return StyleNameSearchTextField;
+            }
+        }
+        private const string StyleNameSearchCancelButton = "ToolbarSearchCancelButton";
+        private const string StyleNameSeachCancelButton = "ToolbarSearchCancelButton";
+        private string _styleSearchCancelButton
+        {
+            get
+            {
+                if (GUI.skin.FindStyle(StyleNameSearchCancelButton) == null)
+                {
+                    return StyleNameSeachCancelButton;
+                }
+                return StyleNameSearchCancelButton;
+            }
+        }
+
         private void Awake()
         {
             if (Preferences.DefaultToEnvironmentUser)
@@ -437,14 +465,14 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
             position.x = position.x - 18;
             position.width = 20;
-            if (GUI.Button(position, "", GUI.skin.FindStyle("ToolbarSearchTextFieldPopup")))
+            if (GUI.Button(position, "", GUI.skin.FindStyle(_styleTextFieldName)))
             {
                 contextMenu.DropDown(position);
             }
 
-            position = GUILayoutUtility.GetRect(10, 10, GUI.skin.FindStyle("ToolbarSearchCancelButton"));
+            position = GUILayoutUtility.GetRect(10, 10, GUI.skin.FindStyle(_styleSearchCancelButton));
             position.x -= 5;
-            if (GUI.Button(position, "", GUI.skin.FindStyle("ToolbarSearchCancelButton")))
+            if (GUI.Button(position, "", GUI.skin.FindStyle(_styleSearchCancelButton)))
             {
                 m_favoriteSearchString = string.Empty;
             }
