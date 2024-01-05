@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customPath: __Project__\Audio\NewVO
-  tempText: 
+  tempText: Hi, it's me Mario! I have a lot of interesting things for you.
   textList:
   - nameFile: Check3
     text: Check HEADLIGHTS are on & clear
@@ -1356,6 +1356,8 @@ MonoBehaviour:
   speaker: {fileID: 1185895024}
   _asyncClip: {fileID: 8300000, guid: 08c3f8e8283d6b94880e22280a446d1b, type: 3}
   voiceName: WIT$CARL
+  characterType: NONE
+  environmentType: NONE
   _clipData: []
   diskCacheSettings:
     DiskCacheLocation: 3

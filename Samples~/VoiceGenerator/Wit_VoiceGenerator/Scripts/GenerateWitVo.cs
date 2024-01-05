@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Kinogoblin.Runtime;
+using Meta.WitAi;
 using Meta.WitAi.TTS;
 using Meta.WitAi.TTS.Data;
 using Meta.WitAi.TTS.Utilities;
@@ -24,10 +26,25 @@ namespace Kinogoblin.Samples
         [SerializeField, Dropdown(nameof(_voiceNames)), OnValueChanged("ChangeVoiceName")]
         private string voiceName;
 
+        [SerializeField, Dropdown(nameof(CHARACTER_IDS)), OnValueChanged("ChangeVoiceName")]
+        private string characterType;
+
+        [SerializeField, Dropdown(nameof(ENVIRONMENT_IDS)), OnValueChanged("ChangeVoiceName")]
+        private string environmentType;
+
         private bool _isWorking;
         [SerializeField] private List<TTSClipData> _clipData;
         [SerializeField] private TTSDiskCacheSettings diskCacheSettings;
         private int _loadCount;
+
+
+        // Supported IDs
+        private const string NONE_ID = "NONE";
+        private static readonly string[] CHARACTER_IDS = new[] { NONE_ID, "CHIPMUNK", "MONSTER", "ROBOT", "DAEMON" };
+
+        private static readonly string[] ENVIRONMENT_IDS = new[]
+            { NONE_ID, "REVERB", "ROOM", "PHONE", "PA", "CATHEDRAL" };
+
 
         private List<string> _voiceNames
         {
@@ -91,9 +108,9 @@ namespace Kinogoblin.Samples
             {
                 textToSpeak.Add(textForGenerateVo.text);
             }
-            
+
             Helpful.ToolDebug("Start Speak");
-            
+
             yield return speaker.SpeakQueuedAsync(textToSpeak.ToArray());
 
             // Play complete clip
@@ -101,6 +118,7 @@ namespace Kinogoblin.Samples
             {
                 speaker.AudioSource.PlayOneShot(_asyncClip);
             }
+
             Helpful.ToolDebug("Finish Speak");
             _isWorking = false;
         }
@@ -108,19 +126,25 @@ namespace Kinogoblin.Samples
         private IEnumerator LoadAndSaveVO()
         {
             _isWorking = true;
+            _clipData.Clear();
             ttsService.UnloadAll();
             _loadCount = textList.Count;
             Helpful.ToolDebug("Start Load");
+            UpdateText(out var append,out var prepend);
+            speaker.VoiceSettings.AppendedText = append.ToString();
+            speaker.VoiceSettings.PrependedText = prepend.ToString();
+            // ttsService.Events.Download.OnDownloadSuccess.AddListener(OnClipDownloaded);
             foreach (var textForGenerateVo in textList)
             {
-                TTSClipData ttsClipData = ttsService.Load(textForGenerateVo.text, voiceName, diskCacheSettings);
+                var phrase =textForGenerateVo.text;
+                TTSClipData ttsClipData = ttsService.Load(phrase, speaker.VoiceSettings, diskCacheSettings);
                 ttsClipData.onStateChange += OnStateChange;
                 _clipData.Add(ttsClipData);
                 yield return null;
             }
             yield return null;
         }
-
+        
         private void OnStateChange(TTSClipData clipData, TTSClipLoadState clipLoadState)
         {
             switch (clipLoadState)
@@ -130,23 +154,21 @@ namespace Kinogoblin.Samples
                 case TTSClipLoadState.Preparing:
                     break;
                 case TTSClipLoadState.Loaded:
-                    OnStreamReady(clipData, clipData.textToSpeak);
+                    OnClipDownloaded(clipData,clipData.textToSpeak);
                     break;
                 case TTSClipLoadState.Error:
                     break;
             }
         }
 
-        private void OnDownloadComplete(string obj)
+        private void OnClipDownloaded(TTSClipData clipData, string voText)
         {
-        }
-
-        private void OnStreamReady(TTSClipData clipData, string voText)
-        {
-            Helpful.ToolDebug($"Text ready to download {voText}");
+            Debug.Log($"Text ready to download {voText}");
+            
             var filepath = Path.Combine(Application.dataPath, customPath);
-            var fileName = textList.FirstOrDefault(text => text.text == voText);
-            SavWav.Save(filepath, fileName.nameFile, clipData.clip);
+            var fileName = textList.FirstOrDefault(text => voText.Contains(text.text));
+            SavWav.Save(filepath,fileName.nameFile,clipData.clip);
+
             _loadCount--;
             if (_loadCount <= 0)
             {
@@ -160,19 +182,92 @@ namespace Kinogoblin.Samples
             {
                 ttsClipData.onStateChange = null;
             }
+
             // Play complete clip
             if (_asyncClip != null)
             {
                 speaker.AudioSource.PlayOneShot(_asyncClip);
             }
-            
             Helpful.ToolDebug($"Finish Loading");
             _isWorking = false;
+        }
+
+        private void SaveClip(TTSClipData runtimeCachedClip)
+        {
+            Helpful.ToolDebug($"Text ready to save {runtimeCachedClip.textToSpeak}");
+            var filepath = Path.Combine(Application.dataPath, customPath);
+            var fileName = textList.FirstOrDefault(text => text.text == runtimeCachedClip.textToSpeak);
+            SavWav.Save(filepath, fileName.nameFile, runtimeCachedClip.clip);
         }
 
         private void ChangeVoiceName()
         {
             speaker.VoiceID = voiceName;
+            RefreshSsml();
+        }
+
+        private void RefreshSsml()
+        {
+            if (!speaker)
+            {
+                Helpful.ToolDebug("No speaker found");
+                return;
+            }
+
+            UpdateText(out var append,out var prepend);
+
+            // Set SSML
+            speaker.PrependedText = prepend.ToString();
+            speaker.AppendedText = append.ToString();
+        }
+
+        private void UpdateText(out StringBuilder append, out StringBuilder prepend)
+        {
+            // Get SSMLs
+            prepend = new StringBuilder();
+            append = new StringBuilder();
+
+            // Get character & environment ids
+            string characterId = characterType;
+            if (string.Equals(characterId, NONE_ID))
+            {
+                characterId = null;
+            }
+
+            string environmentId = environmentType;
+            if (string.Equals(environmentId, NONE_ID))
+            {
+                environmentId = null;
+            }
+
+            // Add sfx tag
+            bool hasCharacter = !string.IsNullOrEmpty(characterId);
+            bool hasEnvironment = !string.IsNullOrEmpty(environmentId);
+            if (hasCharacter || hasEnvironment)
+            {
+                // Add ssml tags
+                prepend.Append("<speak>");
+                append.Append("</speak>");
+
+                // Add prefix & postfix
+                prepend.Append("<sfx");
+                append.Insert(0, "</sfx>");
+
+                // Add character
+                if (hasCharacter)
+                {
+                    prepend.Append($" character=\"{characterId.ToLower()}\"");
+                }
+
+                // Add environment
+                if (hasEnvironment)
+                {
+                    prepend.Append($" environment=\"{environmentId.ToLower()}\"");
+                }
+
+                // Finalize
+                prepend.Append(">");
+            }
         }
     }
 
