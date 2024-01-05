@@ -21,6 +21,16 @@
       "path": "Samples~/CameraExtraTool"
     },
     {
+      "displayName": "LMNT Voice Generator",
+      "description": "Generate text to audio using the LMNT plugin.",
+      "path": "Samples~/VoiceGenerator/LMNT_VoiceGenerator"
+    },
+    {
+      "displayName": "Wit Voice Generator",
+      "description": "Generate text to audio using the meta wit.ai plugin.The plugin has been added to Sample. If you already have a plugin, you can delete the Plugins folder from the Sample folder after adding it.",
+      "path": "Samples~/VoiceGenerator/Wit_VoiceGenerator"
+    },
+    {
       "displayName": "Recorder Playable Generator",
       "description": "Generate Recorder playables from animationTrack.",
       "path": "Samples~/RecorderGeneratorTool"

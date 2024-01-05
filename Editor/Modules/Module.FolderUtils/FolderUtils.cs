@@ -5,6 +5,7 @@ using UnityEditor;
 using System.IO;
 using System.Security.Policy;
 using Kinogoblin.Editor.FavoriteAssets;
+using Kinogoblin.Runtime;
 
 namespace Kinogoblin.Editor
 {

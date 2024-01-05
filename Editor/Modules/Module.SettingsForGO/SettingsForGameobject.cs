@@ -7,6 +7,7 @@ using System.Globalization;
 using UnityEditor;
 using System.IO;
 using Kinogoblin.Editor.FavoriteAssets;
+using Kinogoblin.Runtime;
 
 namespace Kinogoblin.Editor
 {

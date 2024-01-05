@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using Kinogoblin.Editor.FavoriteAssets;
+using Kinogoblin.Runtime;
 using UnityEditor.Compilation;
 
 namespace Kinogoblin.Editor

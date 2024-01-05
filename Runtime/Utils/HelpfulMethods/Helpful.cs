@@ -7,11 +7,17 @@ namespace Kinogoblin.Runtime
     public class Helpful
     {
         private static Color debugColor = new Color(0.5f, 0, 1);
+        private static string _toolMessage = "KinogoblinTool ";
 
-        public static void Debug(string message, string normal)
+        public static void Debug(string message, string text)
         {
             UnityEngine.Debug.Log(string.Format("<color=#{0:X2}{1:X2}{2:X2}>{3}</color>", (byte)(debugColor.r * 255f),
-                (byte)(debugColor.g * 255f), (byte)(debugColor.b * 255f), message) + normal);
+                (byte)(debugColor.g * 255f), (byte)(debugColor.b * 255f), message) + text);
+        }
+
+        public static void ToolDebug(string text)
+        {
+            Debug(_toolMessage, text);
         }
 
         public static void Debug(string message)
