@@ -11,7 +11,6 @@ namespace Kinogoblin.Editor
 {
     public class OtherPackages
     {
-
         public static Color hierarchyColor = new Color(0.5f, 0, 1);
 
         public static GUIStyle buttonStyle;
@@ -20,14 +19,6 @@ namespace Kinogoblin.Editor
 
         public static void OtherPackagesGUI()
         {
-            // ScriptableObject scriptableObj = settings;
-            // SerializedObject serialObj = new SerializedObject(scriptableObj);
-            // SerializedProperty serialProp = serialObj.FindProperty("customHierarchy");
-
-            // EditorGUILayout.PropertyField(serialProp, true);
-            // serialObj.ApplyModifiedProperties();
-
-            ///////////////
             GUILayout.Box("UPDATE PACKAGE FROM UPM", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
             GUILayout.Space(10f);
@@ -59,8 +50,14 @@ namespace Kinogoblin.Editor
             if (GUILayout.Button("Add Unirx"))
                 AddUnirx();
 
+            GUILayout.Space(10f);
+            
+            GUILayout.Box("Additional functions related to plugins", headerStyle, GUILayout.ExpandWidth(true), headerHeight);
 
             GUILayout.Space(10f);
+            
+            if (GUILayout.Button("Add define: UNITASK_DOTWEEN_SUPPORT"))
+                AddNewDefine(ConstData.DefineUnitaskDoTweenSupport);
 
         }
 
@@ -140,21 +137,25 @@ namespace Kinogoblin.Editor
             AddOpenUPM();
             AddNewPackageForUPM("com.yasirkula.runtimeinspector", "com.yasirkula.runtimeinspector");
         }
+
         static void AddIngameDebugConsole()
         {
             AddOpenUPM();
             AddNewPackageForUPM("com.yasirkula.ingamedebugconsole", "com.yasirkula.ingamedebugconsole");
         }
+
         static void AddGraphy()
         {
             AddOpenUPM();
             AddNewPackageForUPM("com.tayx.graphy", "com.tayx.graphy");
         }
+
         static void AddUnitask()
         {
             AddOpenUPM();
             AddNewPackageForUPM("com.cysharp.unitask", "com.cysharp.unitask");
         }
+
         static void AddUnirx()
         {
             AddOpenUPM();
@@ -192,6 +193,20 @@ namespace Kinogoblin.Editor
             }
         }
 
+
+        private static void AddNewDefine(string defineString)
+        {
+            string definesString = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
+
+            string[] defines = definesString.Split(' ');
+
+            if (System.Array.IndexOf(defines, defineString) == -1)
+            {
+                definesString += " " + defineString;
+
+                PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, definesString);
+            }
+        }
 
         static void ProgressCheckKinogoblin()
         {
