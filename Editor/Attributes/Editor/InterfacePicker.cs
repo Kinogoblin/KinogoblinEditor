@@ -1,20 +1,20 @@
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
-namespace Kinogoblin.Runtime
+namespace Kinogoblin.Editor.Attributes
 {
     public class InterfacePicker : EditorWindow
     {
         private class MonoInspector
         {
             public readonly MonoBehaviour Mono;
-            public readonly Editor Editor;
+            public readonly UnityEditor.Editor Editor;
 
             public MonoInspector(MonoBehaviour mono)
             {
                 Mono = mono;
-                Editor = Editor.CreateEditor(mono);
+                Editor = UnityEditor.Editor.CreateEditor(mono);
             }
 
             public void Destroy()

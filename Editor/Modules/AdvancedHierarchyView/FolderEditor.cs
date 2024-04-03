@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using Kinogoblin.Runtime;
-using Kinogoblin;
 
 namespace Kinogoblin.Editor
 {

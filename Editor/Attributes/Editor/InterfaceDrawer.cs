@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using UnityEditor;
-using System.Collections.Generic;
+using UnityEngine;
 
-namespace Kinogoblin.Runtime
+namespace Kinogoblin.Editor.Attributes
 {
     /// <summary>
     /// This property drawer is the meat of the interface support implementation. When

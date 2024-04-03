@@ -82,13 +82,15 @@ namespace Kinogoblin.Editor
 
 			GUILayout.Space(10f);
 
-			if (GUILayout.Button("Cleanup Missing Scripts"))
-				CleanupMissingScripts();
+			if (GUILayout.Button("Find All Missing Scripts Objects"))
+				FindMissingScripts();
 
 			GUILayout.Space(10f);
-
-			// if (GUILayout.Button("Find All Missing Scripts Objects"))
-			//     CleanupMissingScripts();
+			
+			if (GUILayout.Button("Cleanup Missing Scripts"))
+				CleanupMissingScripts();
+			
+			GUILayout.Space(10f);
 
 			if (GUILayout.Button("Open manifest file"))
 			{
@@ -138,23 +140,14 @@ namespace Kinogoblin.Editor
 				if (rootGameObjects != null && rootGameObjects.Length > 0)
 				{
 
-					List<GameObject> allObjectsinScene = new List<GameObject>();
+					List<Transform> allObjectsinScene = new List<Transform>();
 
 
 					EditorUtility.DisplayProgressBar("Preprocessing", $"Fetching GameObjects in active scene \"{scene.name}\"", 0);
 
 					foreach (var gameObject in rootGameObjects)
 					{
-						var childObjects = gameObject.GetComponentsInChildren<Transform>();
-
-						if (childObjects != null && childObjects.Length > 0)
-						{
-							foreach (var obj in childObjects)
-							{
-								if (obj != null) { allObjectsinScene.Add(obj.gameObject); }
-							}
-						}
-
+						Helpful.GetListOfAllChilds(gameObject.transform, allObjectsinScene);
 					}
 
 					EditorUtility.ClearProgressBar();
@@ -163,10 +156,10 @@ namespace Kinogoblin.Editor
 					for (int b = 0; b < allObjectsinScene.Count; b++)
 					{
 
-						var gameObject = allObjectsinScene[b];
+						var transform = allObjectsinScene[b];
 
 						EditorUtility.DisplayProgressBar("Removing missing script references", $"Inspecting GameObject  {b + 1}/{allObjectsinScene.Count} in active scene \"{scene.name}\"", (float)(b) / allObjectsinScene.Count);
-						GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gameObject);
+						GameObjectUtility.RemoveMonoBehavioursWithMissingScript(transform.gameObject);
 					}
 
 					EditorSceneManager.MarkSceneDirty(scene);
@@ -182,6 +175,8 @@ namespace Kinogoblin.Editor
 			EditorUtility.DisplayDialog("Operation Completed", "Successfully removed missing script references. Please save all currently open scenes to keep these changes persistent", "Ok");
 
 		}
+		
+		[MenuItem("Tools/Kinogoblin tools/Find Missing Scripts")]
 		static void FindMissingScripts()
 		{
 			int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
@@ -196,23 +191,14 @@ namespace Kinogoblin.Editor
 				if (rootGameObjects != null && rootGameObjects.Length > 0)
 				{
 
-					List<GameObject> allObjectsinScene = new List<GameObject>();
+					List<Transform> allObjectsinScene = new List<Transform>();
 
 
 					EditorUtility.DisplayProgressBar("Preprocessing", $"Fetching GameObjects in active scene \"{scene.name}\"", 0);
 
 					foreach (var gameObject in rootGameObjects)
 					{
-						var childObjects = gameObject.GetComponentsInChildren<Transform>();
-
-						if (childObjects != null && childObjects.Length > 0)
-						{
-							foreach (var obj in childObjects)
-							{
-								if (obj != null) { allObjectsinScene.Add(obj.gameObject); }
-							}
-						}
-
+						Helpful.GetListOfAllChilds(gameObject.transform, allObjectsinScene);
 					}
 
 					EditorUtility.ClearProgressBar();
@@ -223,12 +209,14 @@ namespace Kinogoblin.Editor
 
 						var gameObject = allObjectsinScene[b];
 
-						EditorUtility.DisplayProgressBar("Removing missing script references", $"Inspecting GameObject  {b + 1}/{allObjectsinScene.Count} in active scene \"{scene.name}\"", (float)(b) / allObjectsinScene.Count);
-						GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gameObject);
+						EditorUtility.DisplayProgressBar("Finding missing script references", $"Inspecting GameObject  {b + 1}/{allObjectsinScene.Count} in active scene \"{scene.name}\"", (float)(b) / allObjectsinScene.Count);
+						int count = GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(gameObject.gameObject);
+						if (count > 0)
+						{
+							Debug.LogError($"Missing Scripts {count} here -> {gameObject.name}",gameObject.gameObject);
+						}
 					}
-
-					EditorSceneManager.MarkSceneDirty(scene);
-
+					// EditorSceneManager.MarkSceneDirty(scene);
 					EditorUtility.ClearProgressBar();
 				}
 
@@ -237,7 +225,7 @@ namespace Kinogoblin.Editor
 
 			EditorUtility.ClearProgressBar();
 
-			EditorUtility.DisplayDialog("Operation Completed", "Successfully removed missing script references. Please save all currently open scenes to keep these changes persistent", "Ok");
+			EditorUtility.DisplayDialog("Operation Completed", "Successfully found missing script references. You can select an object by clicking on the error in the console", "Ok");
 
 		}
 

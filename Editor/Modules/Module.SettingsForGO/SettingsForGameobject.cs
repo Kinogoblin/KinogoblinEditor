@@ -631,11 +631,14 @@ namespace Kinogoblin.Editor
             if (auroSaveChangedMesh)
             {
                 MeshFilter meshFilterParent = pivotParent.GetComponent<MeshFilter>();
-                if (!Directory.Exists(pathCustom))
+                if (meshFilterParent != null)
                 {
-                    Directory.CreateDirectory(pathCustom);
+                    if (!Directory.Exists(pathCustom))
+                    {
+                        Directory.CreateDirectory(pathCustom);
+                    }
+                    SaveMesh(meshFilterParent, pivotParent.name, true);
                 }
-                SaveMesh(meshFilterParent, pivotParent.name, true);
             }
         }
 
