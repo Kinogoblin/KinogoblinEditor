@@ -105,6 +105,7 @@ namespace Kinogoblin.Editor
 
         static void HierarchyOnGUI(int instanceID, Rect selectionRect)
         {
+            if (!ProfileData.Instance) return;
             if (!ProfileData.Instance.customIcons) return;
 
             var fullRect = selectionRect;
