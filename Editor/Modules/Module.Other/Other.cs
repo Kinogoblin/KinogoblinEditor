@@ -114,6 +114,7 @@ namespace Kinogoblin.Editor
 
 			ProfileData.Instance.customView = EditorGUILayout.Toggle("Custom View", ProfileData.Instance.customView);
 			ProfileData.Instance.customIcons = EditorGUILayout.Toggle("Custom Icons", ProfileData.Instance.customIcons);
+			ProfileData.Instance.listenHotKeys = EditorGUILayout.Toggle("Listen Hotkeys", ProfileData.Instance.listenHotKeys);
 			ProfileData.Instance.debugSend = EditorGUILayout.Toggle("Debug send", ProfileData.Instance.debugSend);
 			serialObj.ApplyModifiedProperties();
 		}

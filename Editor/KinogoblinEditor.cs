@@ -1,4 +1,6 @@
-﻿namespace Kinogoblin.Editor
+﻿using Kinogoblin.Editor.FavoriteAssets;
+
+namespace Kinogoblin.Editor
 {
     //Version 1.11
     using UnityEngine;
@@ -19,10 +21,17 @@
 
     class EditorSettings : EditorWindow
     {
-        [MenuItem("Tools/Kinogoblin tools/Set Settings Window #w", false, -100)]
+        [MenuItem("Tools/Kinogoblin tools/Set Settings Window", false, -100)]
         public static void ShowWindow()
         {
             var window = EditorWindow.GetWindow<EditorSettings>();
+        }
+
+        [MenuItem("Tools/Kinogoblin tools/HotKeys/Set Settings Window #w", false, -100)]
+        public static void ShowWindow_HotKey()
+        {
+            if (ProfileData.Instance.listenHotKeys)
+                ShowWindow();
         }
 
         private TypesOfSettings type;
@@ -35,10 +44,10 @@
             titleContent = new GUIContent("K. Editor", m_Logo);
             if (varaints.Length == 0)
             {
-                varaints = new string[(int)TypesOfSettings.Custom+1];
-                for (int i = 0; i < (int)TypesOfSettings.Custom+1; i++)
+                varaints = new string[(int)TypesOfSettings.Custom + 1];
+                for (int i = 0; i < (int)TypesOfSettings.Custom + 1; i++)
                 {
-                    varaints[i] = ((TypesOfSettings) i).ToString();
+                    varaints[i] = ((TypesOfSettings)i).ToString();
                 }
             }
 
@@ -57,7 +66,7 @@
             EditorGUILayout.BeginVertical("box", GUILayout.MaxWidth(150), GUILayout.ExpandHeight(true));
 
 
-            type = (TypesOfSettings) GUILayout.SelectionGrid((int) type, varaints, 1);
+            type = (TypesOfSettings)GUILayout.SelectionGrid((int)type, varaints, 1);
 
             EditorGUILayout.EndVertical();
 
@@ -114,11 +123,12 @@
             }
 
             m_Logo = new Texture2D(16, 16, TextureFormat.PVRTC_RGBA4, false);
-            m_Logo = (Texture2D) AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
+            m_Logo = (Texture2D)AssetDatabase.LoadAssetAtPath(logoPath, typeof(Texture2D));
             m_Logo.Apply();
             Other.UpdateScriptableObj();
             FolderUtils.UpdateScriptableObj();
         }
+
         public static SaveSettings GetSettings()
         {
             if (AssetDatabase.LoadAssetAtPath(settingsPath, typeof(SaveSettings)) == null)

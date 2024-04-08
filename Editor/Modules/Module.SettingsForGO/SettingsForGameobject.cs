@@ -764,9 +764,11 @@ namespace Kinogoblin.Editor
         static class SetGameObjestSettings
         {
 
-            [MenuItem("Tools/Kinogoblin tools/Shortcuts/NewPivote #p")]
+            [MenuItem("Tools/Kinogoblin tools/HotKeys/NewPivote #p")]
             static public void SetPivote()
             {
+                if (!ProfileData.Instance.listenHotKeys) 
+                    return;
                 if (Selection.activeGameObject != null)
                 {
                     Debug.Log("<color=blue>Kinogoblin Editor</color> Set new pivote for " + Selection.activeGameObject.name);
@@ -849,9 +851,11 @@ namespace Kinogoblin.Editor
             }
 
 
-            [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Group #g", false, 4)]
+            [MenuItem("Tools/Kinogoblin tools/HotKeys/Create Group #g", false, 4)]
             public static void CreateGroup()
             {
+                if (!ProfileData.Instance.listenHotKeys) 
+                    return;
                 GameObject newGO = new GameObject("Group");
                 newGO.transform.parent = Selection.gameObjects[0].transform.parent;
                 newGO.transform.position = Selection.gameObjects[0].transform.position;
@@ -862,9 +866,11 @@ namespace Kinogoblin.Editor
                 CenterOnChildren();
             }
 
-            [MenuItem("Tools/Kinogoblin tools/Shortcuts/Toggle Active #a", false, 4)]
+            [MenuItem("Tools/Kinogoblin tools/HotKeys/Toggle Active #a", false, 4)]
             public static void ToggleActive()
             {
+                if (!ProfileData.Instance.listenHotKeys) 
+                    return;
                 foreach (GameObject go in Selection.gameObjects)
                 {
                     go.SetActive(!go.activeInHierarchy);
@@ -872,7 +878,7 @@ namespace Kinogoblin.Editor
                 }
             }
 
-            [MenuItem("Tools/Kinogoblin tools/Shortcuts/Center Group on Children", false, 5)]
+            [MenuItem("Tools/Kinogoblin tools/HotKeys/Center Group on Children", false, 5)]
             public static void CenterOnChildren()
             {
                 foreach (Transform root in Selection.GetFiltered(typeof(Transform), SelectionMode.TopLevel | SelectionMode.ExcludePrefab | SelectionMode.Editable))

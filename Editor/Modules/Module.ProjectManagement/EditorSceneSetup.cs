@@ -8,45 +8,58 @@ using System;
 using UnityEditor.Callbacks;
 using UnityEditor.ProjectWindowCallback;
 using System.IO;
+using Kinogoblin.Editor.FavoriteAssets;
 
 namespace Kinogoblin
 {
-	public class EditorSceneSetup : ScriptableObject
+    public class EditorSceneSetup : ScriptableObject
     {
-        [MenuItem("Tools/Kinogoblin tools/Save Scene Setup As... #%&S", priority = 170)]
+        [MenuItem("Tools/Kinogoblin tools/Save Scene Setup As...", priority = 170)]
         public static void SaveSetup()
         {
-            string path = EditorUtility.SaveFilePanelInProject("Save EditorSceneSetup", "New EditorSceneSetup", "asset", "Save EditorSceneSetup?");
-            if(path != string.Empty)
+            string path = EditorUtility.SaveFilePanelInProject("Save EditorSceneSetup", "New EditorSceneSetup", "asset",
+                "Save EditorSceneSetup?");
+            if (path != string.Empty)
             {
                 EditorSceneSetup setup = GetCurrentSetup();
                 AssetDatabase.CreateAsset(setup, path);
             }
         }
 
+        [MenuItem("Tools/Kinogoblin tools/HotKeys/Save Scene Setup As... #%&S", priority = 170)]
+        public static void SaveSetup_HotKey()
+        {
+            if (ProfileData.Instance.listenHotKeys)
+                SaveSetup();
+        }
+
         public delegate void EditorSceneSetupLoadedDelegate(EditorSceneSetup setup);
+
         public static event EditorSceneSetupLoadedDelegate onSetupLoaded;
 
         [OnOpenAsset]
         static bool OnOpenAsset(int instanceID, int line)
         {
             var obj = EditorUtility.InstanceIDToObject(instanceID);
-            if(obj is EditorSceneSetup)
+            if (obj is EditorSceneSetup)
             {
                 EditorSceneSetup setup = (EditorSceneSetup)obj;
                 int active = setup.ActiveScene;
 
                 try
                 {
-                    EditorUtility.DisplayProgressBar("Loading Scenes", string.Format("Loading Scene Setup {0}....", setup.name), 1.0f);
+                    EditorUtility.DisplayProgressBar("Loading Scenes",
+                        string.Format("Loading Scene Setup {0}....", setup.name), 1.0f);
                     RestoreSetup(setup);
                 }
                 finally
                 {
                     EditorUtility.ClearProgressBar();
                 }
+
                 return true;
             }
+
             return false;
         }
 
@@ -55,7 +68,7 @@ namespace Kinogoblin
         {
             AssetFactory.CreateAssetInProjectWindow<EditorSceneSetup>("SceneSet Icon", "New SceneSetup.asset");
         }
-        
+
         [HideInInspector] public int ActiveScene;
         [HideInInspector] public EditorScene[] LoadedScenes;
 
@@ -74,7 +87,7 @@ namespace Kinogoblin
 
             int i = 0;
             editorSetup.LoadedScenes = new EditorScene[scenesetups.Length];
-            foreach(var setup in scenesetups)
+            foreach (var setup in scenesetups)
             {
                 if (setup.isActive)
                     editorSetup.ActiveScene = i;
@@ -84,6 +97,7 @@ namespace Kinogoblin
 
                 i++;
             }
+
             return editorSetup;
         }
 
@@ -91,7 +105,7 @@ namespace Kinogoblin
         {
             SceneSetup[] setups = new SceneSetup[editorSetup.LoadedScenes.Length];
 
-            for(int i = 0; i < setups.Length; i++)
+            for (int i = 0; i < setups.Length; i++)
             {
                 setups[i] = new SceneSetup();
                 string path = AssetDatabase.GetAssetPath(editorSetup.LoadedScenes[i].Scene);
@@ -102,15 +116,14 @@ namespace Kinogoblin
 
             EditorSceneManager.RestoreSceneManagerSetup(setups);
 
-            if(onSetupLoaded != null)
+            if (onSetupLoaded != null)
                 onSetupLoaded.Invoke(editorSetup);
         }
-
     }
 
-	public class AssetFactory
+    public class AssetFactory
     {
-        public static void CreateAssetInProjectWindow<T>(string iconName, string fileName) where T: ScriptableObject
+        public static void CreateAssetInProjectWindow<T>(string iconName, string fileName) where T : ScriptableObject
         {
             var icon = EditorGUIUtility.FindTexture(iconName);
 
@@ -139,6 +152,5 @@ namespace Kinogoblin
                 ProjectWindowUtil.ShowCreatedAsset(asset);
             }
         }
-
     }
 }

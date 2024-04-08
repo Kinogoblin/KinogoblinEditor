@@ -83,7 +83,7 @@ namespace Kinogoblin.Editor
 
     static class CreateProjectsComponents
     {
-        [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Scene Catalog")]
+        [MenuItem("Tools/Kinogoblin tools/HotKeys/Create Scene Catalog")]
         public static void SceneCreate()
         {
             Helpful.Debug("Kinogoblin Editor ", " Create scene catalog");
@@ -94,9 +94,11 @@ namespace Kinogoblin.Editor
             }
         }
 
-        [MenuItem("Tools/Kinogoblin tools/Shortcuts/Create Folder Catalog #f")]
+        [MenuItem("Tools/Kinogoblin tools/HotKeys/Create Folder Catalog #f")]
         public static void FolderCreate()
         {
+            if (!ProfileData.Instance.listenHotKeys) 
+                return;
             Helpful.Debug("Kinogoblin Editor ", " Create folder catalog");
             var projectName = ProfileData.Instance.customFolderHierarchy.projectName;
             var projectFolders = ProfileData.Instance.customFolderHierarchy.paths;

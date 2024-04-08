@@ -45,10 +45,16 @@ namespace Kinogoblin.Editor.FavoriteAssets
             EditorApplication.projectWindowItemOnGUI += projectWindowItemOnGUI;
         }
 
-        [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/ShowWindow #T", priority = WINDOWMENUITEMPRIO)]
+        [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/ShowFavoritesWindow", priority = WINDOWMENUITEMPRIO)]
         private static void ShowFavoriteAssetsWindow()
         {
             Window.Init(true);
+        }
+        [MenuItem("Tools/Kinogoblin tools/HotKeys/ShowFavoritesWindow #T", priority = WINDOWMENUITEMPRIO)]
+        private static void ShowFavoriteAssetsWindow_HotKey()
+        {
+            if (ProfileData.Instance.listenHotKeys)
+                ShowFavoriteAssetsWindow();
         }
         //Delegate for EditorApplication.projectWindowItemOnGUI
         private static void projectWindowItemOnGUI(string guid, Rect selectionRect)
@@ -57,7 +63,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 GUI.Label(selectionRect, m_iconFavorite, GUIStyle.none);
         }
 
-        [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/Mark asset as favorite %#T", priority = WINDOWMENUITEMPRIO)]
+        [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/Mark asset as favorite", priority = WINDOWMENUITEMPRIO)]
         public static void ToggleFavorite()
         {
             Window.Init(true);
@@ -67,8 +73,15 @@ namespace Kinogoblin.Editor.FavoriteAssets
             foreach (UnityEngine.Object selectedObj in Selection.objects)
                 ProfileData.Instance.ToggleSceneObjectFavorite(selectedObj);
         }
+        
+        [MenuItem("Tools/Kinogoblin tools/HotKeys/Mark asset as favorite %#T", priority = WINDOWMENUITEMPRIO)]
+        public static void ToggleFavorite_HotKey()
+        {
+            if (ProfileData.Instance.listenHotKeys)
+                ToggleFavorite();
+        }
 
-        [MenuItem("Assets/FavoriteAssets/Add asset to favorites", false, ASSETMENUITEMPRIO)]
+        [MenuItem("Assets/Kinogoblin tools/FavoriteAssets/Add asset to favorites", false, ASSETMENUITEMPRIO)]
         public static void AddAssetsToFavorites()
         {
             UnityEngine.Object[] objects = Selection.objects;
@@ -77,7 +90,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 ProfileData.Instance.AddToAssetFavorites(obj);
         }
 
-        [MenuItem("Assets/FavoriteAssets/Add asset to favorites", true, ASSETMENUITEMPRIO)]
+        [MenuItem("Assets/Kinogoblin tools/FavoriteAssets/Add asset to favorites", true, ASSETMENUITEMPRIO)]
         public static bool ValidatePrefab()
         {
             //Check if any of selected is an asset
@@ -105,7 +118,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
             return false;
         }
 
-        [MenuItem("Assets/FavoriteAssets/Remove asset from favorites", false, ASSETMENUITEMPRIO)]
+        [MenuItem("Assets/Kinogoblin tools/FavoriteAssets/Remove asset from favorites", false, ASSETMENUITEMPRIO)]
         public static void RemoveAssetsToFavorites()
         {
             string path;
@@ -122,7 +135,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
             }
         }
 
-        [MenuItem("Assets/FavoriteAssets/Remove asset from favorites", true, ASSETMENUITEMPRIO)]
+        [MenuItem("Assets/Kinogoblin tools/FavoriteAssets/Remove asset from favorites", true, ASSETMENUITEMPRIO)]
         public static bool ValidateCurrentFavorite()
         {
             string path;
