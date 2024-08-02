@@ -53,6 +53,40 @@ namespace Kinogoblin.Runtime
             }
         }
 
+        public static List<T> ShuffleList<T>(List<T> list)
+        {
+            System.Random rand = new System.Random();
+            var tempList = list;
+            int n = tempList.Count;
+            for (int i = n - 1; i > 0; i--)
+            {
+                int j = rand.Next(0, i + 1);
+                (tempList[i], tempList[j]) = (tempList[j], tempList[i]);
+            }
+
+            return tempList;
+        }
+
+        public static void SameShuffleOfTwoLists<T, Y>(List<T> list1, List<Y> list2,
+            bool skipIfDifferentCount = true)
+        {
+            System.Random rand = new System.Random();
+            if (list1.Count != list2.Count && skipIfDifferentCount)
+            {
+                Debug("Different count in Lists");
+                return;
+            }
+            int n = list1.Count > list2.Count ? list1.Count : list2.Count;
+            for (int i = n - 1; i > 0; i--)
+            {
+                int j = rand.Next(0, i + 1);
+                if (j < list1.Count - 1 && i < list1.Count - 1)
+                    (list1[i], list1[j]) = (list1[j], list1[i]);
+                if (j < list2.Count - 1 && i < list2.Count - 1)
+                    (list2[i], list2[j]) = (list2[j], list2[i]);
+            }
+        }
+
         public static List<Transform> GetListOfAllChilds(Transform parent)
         {
             List<Transform> list = new List<Transform>();
@@ -61,21 +95,7 @@ namespace Kinogoblin.Runtime
                 list.Add(child);
                 GetListOfAllChilds(child, list);
             }
-
             return list;
-        }
-
-        static void GetListOfChildsWithComponent<T>(Transform parent, List<Transform> list)
-        {
-            foreach (Transform child in parent)
-            {
-                if (child.GetComponent<T>() != null)
-                {
-                    list.Add(child);
-                }
-
-                GetListOfAllChilds(child, list);
-            }
         }
 
         public static string GetName(string name, char symbol, int numberName)
@@ -103,7 +123,7 @@ namespace Kinogoblin.Runtime
                 newname = name.Split(new string[] { textPart }, StringSplitOptions.None);
             return newname;
         }
-        
+
         /// <summary>
         /// Returns the distance to a line segment. Based on the version outlined in
         /// Realtime Collision Detection by Christer Ericson.
@@ -125,11 +145,11 @@ namespace Kinogoblin.Runtime
             // Handle cases where c projects onto ab
             return Vector2.Dot(ac, ac) - e * e / f;
         }
-        
+
         // https://forum.unity.com/threads/how-do-i-find-the-closest-point-on-a-line.340058/ 
         public static Vector3 NearestPointOnLine(Vector3 linePoint, Vector3 lineDirection, Vector3 queryPoint)
         {
-            lineDirection.Normalize();//this needs to be a unit vector
+            lineDirection.Normalize(); //this needs to be a unit vector
             var v = queryPoint - linePoint;
             var d = Vector3.Dot(v, lineDirection);
             return linePoint + lineDirection * d;
@@ -149,7 +169,8 @@ namespace Kinogoblin.Runtime
         }
 
         //Based on: https://www.topcoder.com/thrive/articles/Geometry%20Concepts%20part%202:%20%20Line%20Intersection%20and%20its%20Applications 
-        public static bool SegmentLineIntersection(Vector2 segmentStart, Vector2 segmentEnd, Vector2 lineStart, Vector2 lineEnd,
+        public static bool SegmentLineIntersection(Vector2 segmentStart, Vector2 segmentEnd, Vector2 lineStart,
+            Vector2 lineEnd,
             out Vector2 result)
         {
             var a1 = segmentEnd.y - segmentStart.y;
