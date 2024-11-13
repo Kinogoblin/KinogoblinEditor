@@ -282,12 +282,14 @@ namespace Kinogoblin.Editor
                     var meshRenderer = item.GetComponent<MeshRenderer>();
                     if (meshRenderer != null)
                     {
+                        Undo.RecordObject(meshRenderer, "Change Material");
                         var mats = meshRenderer.materials;
                         for (int i = 0; i < mats.Length; i++)
                         {
                             mats[i] = mat;
                         }
                         meshRenderer.sharedMaterials = mats;
+                        EditorUtility.SetDirty(meshRenderer);
                     }
                     if (updateSkinnedMeshRenderer)
                     {
@@ -295,12 +297,14 @@ namespace Kinogoblin.Editor
 
                         if (skinnedMeshRenderer != null)
                         {
+                            Undo.RecordObject(skinnedMeshRenderer, "Change Material");
                             var mats = skinnedMeshRenderer.sharedMaterials;
                             for (int i = 0; i < mats.Length; i++)
                             {
                                 mats[i] = mat;
                             }
                             skinnedMeshRenderer.sharedMaterials = mats;
+                            EditorUtility.SetDirty(meshRenderer);
                         }
                     }
                 }
@@ -312,11 +316,13 @@ namespace Kinogoblin.Editor
             public static void SaveMaterialFromGameObject(string customPath, Transform activeTransform)
             {
                 Debug.Log("Save Mat!");
-                if (activeTransform.GetComponent<Renderer>() != null)
+                var renderer = activeTransform.GetComponent<Renderer>();
+                if (renderer != null)
                 {
                     Debug.Log("Save Mat! 1");
                     List<Material> new_materials = new List<Material>() { };
-                    foreach (Material mat in activeTransform.GetComponent<Renderer>().sharedMaterials)
+                    Undo.RecordObject(renderer, "Save Materials");
+                    foreach (Material mat in renderer.sharedMaterials)
                     {
                         Material new_material = new Material(mat.shader);
                         new_material.CopyPropertiesFromMaterial(mat);
@@ -326,7 +332,8 @@ namespace Kinogoblin.Editor
                         }
                         new_materials.Add(AssetDatabase.LoadAssetAtPath<Material>(customPath + mat.name + ".mat"));
                     }
-                    activeTransform.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
+                    renderer.sharedMaterials = new_materials.ToArray();
+                    EditorUtility.SetDirty(renderer);
                 }
                 SaveMaterialsInChilds(customPath, activeTransform);
             }
@@ -335,11 +342,12 @@ namespace Kinogoblin.Editor
             {
                 foreach (Transform child in activeTransform)
                 {
-                    if (child.GetComponent<Renderer>() != null)
+                    var renderer = child.GetComponent<Renderer>();
+                    if (renderer != null)
                     {
-                        Debug.Log("Save Mat! 2");
+                        Undo.RecordObject(renderer, "Save Materials");
                         List<Material> new_materials = new List<Material>() { };
-                        foreach (Material mat in child.GetComponent<Renderer>().sharedMaterials)
+                        foreach (Material mat in renderer.sharedMaterials)
                         {
                             Material new_material = new Material(mat.shader);
                             new_material.CopyPropertiesFromMaterial(mat);
@@ -349,7 +357,8 @@ namespace Kinogoblin.Editor
                             }
                             new_materials.Add(AssetDatabase.LoadAssetAtPath<Material>(customPath + mat.name + ".mat"));
                         }
-                        child.GetComponent<Renderer>().sharedMaterials = new_materials.ToArray();
+                        renderer.sharedMaterials = new_materials.ToArray();
+                        EditorUtility.SetDirty(renderer);
                     }
                     SaveMaterialsInChilds(customPath, child);
                 }

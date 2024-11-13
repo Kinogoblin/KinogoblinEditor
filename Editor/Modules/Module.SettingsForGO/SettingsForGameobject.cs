@@ -871,9 +871,10 @@ namespace Kinogoblin.Editor
             {
                 if (!ProfileData.Instance.listenHotKeys) 
                     return;
+                Undo.RecordObjects(Selection.gameObjects, "Set Active");
                 foreach (GameObject go in Selection.gameObjects)
                 {
-                    go.SetActive(!go.activeInHierarchy);
+                    go.SetActive(!go.activeSelf);
                     EditorUtility.SetDirty(go);
                 }
             }

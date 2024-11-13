@@ -24,7 +24,15 @@ namespace Kinogoblin.Editor
         [MenuItem("Tools/Kinogoblin tools/Set Settings Window", false, -100)]
         public static void ShowWindow()
         {
-            var window = EditorWindow.GetWindow<EditorSettings>();
+            EditorWindow focusedWindow = EditorWindow.focusedWindow;
+            if (focusedWindow != null)
+            {
+                string windowTitle = focusedWindow.titleContent.text;
+                if (windowTitle != "Scene" && windowTitle != "Game")
+                {
+                    var window = GetWindow<EditorSettings>();
+                }
+            }
         }
 
         [MenuItem("Tools/Kinogoblin tools/HotKeys/Set Settings Window #w", false, -100)]
