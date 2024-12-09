@@ -16,6 +16,7 @@ namespace Kinogoblin.Editor
         AddOtherPackages,
         Timeline,
         SceneFastTravel,
+        BuildSettings,
         Custom
     }
 
@@ -89,7 +90,7 @@ namespace Kinogoblin.Editor
                     ChangeMaterial.ChangeMaterialGUI();
                     break;
                 case TypesOfSettings.SettingsForGameobject:
-                    SettingsForGameobject.SettingsForGameobjectGUI();
+                    SettingsForGameobject.SettingsForGameObjectGUI();
                     break;
                 case TypesOfSettings.FolderUtils:
                     FolderUtils.FolderUtilsGUI();
@@ -105,6 +106,9 @@ namespace Kinogoblin.Editor
                     break;
                 case TypesOfSettings.SceneFastTravel:
                     SceneFastTravel.SceneFastTravelGUI();
+                    break;
+                case TypesOfSettings.BuildSettings:
+                    BuildSettings.BuildSettingsGUI();
                     break;
                 default:
                     ChangeMaterial.ChangeMaterialGUI();

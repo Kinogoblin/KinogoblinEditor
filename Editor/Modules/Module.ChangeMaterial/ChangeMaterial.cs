@@ -82,7 +82,7 @@ namespace Kinogoblin.Editor
 
             GUILayout.Space(5f);
 
-            GUILayout.Label("Custom path " + pathCustom);
+            pathCustom = GUILayout.TextField(pathCustom, GUILayout.Width(300));
 
             if (GUILayout.Button("Set default path", buttonStyle, buttonHeight))
             {
@@ -283,7 +283,7 @@ namespace Kinogoblin.Editor
                     if (meshRenderer != null)
                     {
                         Undo.RecordObject(meshRenderer, "Change Material");
-                        var mats = meshRenderer.materials;
+                        var mats = meshRenderer.sharedMaterials;
                         for (int i = 0; i < mats.Length; i++)
                         {
                             mats[i] = mat;
