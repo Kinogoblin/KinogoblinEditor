@@ -49,6 +49,8 @@ namespace Kinogoblin.Editor
                 AddUnitask();
             if (GUILayout.Button("Add Unirx"))
                 AddUnirx();
+            if (GUILayout.Button("Add MRTK GraphicsTools"))
+                AddMRTKGraphicsTools();
 
             GUILayout.Space(10f);
             
@@ -124,6 +126,13 @@ namespace Kinogoblin.Editor
         {
             AddOpenUPM();
             AddNewPackageForUPM("com.dbrizov.naughtyattributes", "com.dbrizov.naughtyattributes");
+        }
+        
+        
+        private static void AddMRTKGraphicsTools()
+        {
+            Client.Add("https://github.com/microsoft/MixedReality-GraphicsTools-Unity.git?path=/com.microsoft.mrtk.graphicstools.unity#v0.8.0");
+            AssetDatabase.Refresh();
         }
 
         static void AddUnityAssetUsageDetector()
