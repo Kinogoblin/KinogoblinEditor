@@ -1,0 +1,18 @@
+{
+    "name": "Kinogoblin.Attributes.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6cd9b762f83ec684b8335a734c5b846b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
