@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Kinogoblin.Editor.Attributes
+namespace Kinogoblin.Runtime.Attributes
 {
     /// <summary>
     /// When this attribute is attached to a MonoBehaviour field within a

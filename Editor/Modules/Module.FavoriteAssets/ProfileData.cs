@@ -119,6 +119,8 @@ namespace Kinogoblin.Editor.FavoriteAssets
         public GameObjectCustomSettings gameObjectCustomSettings;
         public MeshRenderer renderer;
         public bool enableCustomImportProcessor = false;
+        
+        [SerializeField] public GUIStyle style;
         ///////////////////////////////////
 
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kinogoblin.Editor.Attributes
+namespace Kinogoblin.Runtime.Attributes
 {
     public class InterfacePicker : EditorWindow
     {

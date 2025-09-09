@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Kinogoblin.Editor.Attributes
+namespace Kinogoblin.Runtime.Attributes
 {
     /// <summary>
     /// This property drawer is the meat of the interface support implementation. When
