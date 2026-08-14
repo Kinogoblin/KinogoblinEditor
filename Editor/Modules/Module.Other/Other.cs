@@ -152,6 +152,7 @@ namespace Kinogoblin.Editor
 
                     foreach (var gameObject in rootGameObjects)
                     {
+                        allObjectsinScene.Add(gameObject.transform);
                         Helpful.GetListOfAllChilds(gameObject.transform, allObjectsinScene);
                     }
 
@@ -204,6 +205,7 @@ namespace Kinogoblin.Editor
 
                     foreach (var gameObject in rootGameObjects)
                     {
+                        allObjectsinScene.Add(gameObject.transform);
                         Helpful.GetListOfAllChilds(gameObject.transform, allObjectsinScene);
                     }
 
