@@ -1,12 +1,14 @@
 {
   "name": "com.kinogoblin.editor",
   "displayName": "Kinogoblin Editor",
-  "version": "1.18.1",
-  "unity": "2018.3",
-  "description": "CustomEditor",
+  "version": "1.19.0",
+  "unity": "2021.2",
+  "description": "A collection of Unity Editor productivity tools: asset/scene favorites, scene view camera bookmarks, hierarchy component icons, mesh/material tools, and project & build workflow helpers.",
   "keywords": [
     "custom",
     "editor",
+    "favorites",
+    "hierarchy",
     "folder",
     "materials",
     "pivote",
@@ -43,7 +45,7 @@
     {
       "displayName": "CustomImportProcessor",
       "description": "Methods for get custom info from models.",
-      "path": "Samples~/CameraExtraTool"
+      "path": "Samples~/CustomImportProcessor"
     },
     {
       "displayName": "Playable Particle System",
@@ -89,6 +91,11 @@
       "displayName": "SkyBox Playable",
       "description": "Playble for change skybox material (not properties).",
       "path": "Samples~/Playables/SkyBoxPlayable"
+    },
+    {
+      "displayName": "Live Camera Playable",
+      "description": "Playable for controlling a live camera during Timeline playback.",
+      "path": "Samples~/Playables/LiveCameraPlaybale"
     }
   ]
 }
