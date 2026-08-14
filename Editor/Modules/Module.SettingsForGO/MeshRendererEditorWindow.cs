@@ -1,4 +1,5 @@
-﻿using Kinogoblin.Runtime;
+﻿using System.Collections.Generic;
+using Kinogoblin.Runtime;
 using UnityEngine;
 using UnityEditor;
 
@@ -36,9 +37,9 @@ namespace Kinogoblin.Editor
             GUILayout.Label("MeshRenderer Settings Editor", EditorStyles.boldLabel);
             GUILayout.Space(10);
 
-            Transform selection = Selection.activeTransform;
+            Transform[] selection = Selection.transforms;
 
-            if (selection == null)
+            if (selection == null || selection.Length == 0)
             {
                 EditorGUILayout.HelpBox("Please select a gameObject with MeshRenderer or parent with such objects.",
                     MessageType.Error);
@@ -121,46 +122,68 @@ namespace Kinogoblin.Editor
             }
         }
 
-        private static void ApplySettingSingleParam(Transform target, string paramName)
+        //Collects the target MeshRenderers for all selected objects, expanding into children when "Apply to Children" is on
+        private static IEnumerable<MeshRenderer> GetTargetRenderers(Transform[] selection)
         {
-            if (target == null) return;
-            if (target.GetComponent<MeshRenderer>() == null) return;
+            var result = new HashSet<MeshRenderer>();
+            if (selection == null) return result;
 
-            var meshRenderer = target.GetComponent<MeshRenderer>();
-
-            switch (paramName)
+            foreach (Transform transform in selection)
             {
-                case "shadowCastingMode":
-                    meshRenderer.shadowCastingMode = customSettings.shadowCastingMode;
-                    break;
+                if (transform == null) continue;
 
-                case "allowOcclusionWhenDynamic":
-                    meshRenderer.allowOcclusionWhenDynamic = customSettings.allowOcclusionWhenDynamic;
-                    break;
-
-                case "renderingLayerMask":
-                    meshRenderer.renderingLayerMask = (uint)customSettings.renderingLayerMask;
-                    break;
-
-                case "lightProbeUsage":
-                    meshRenderer.lightProbeUsage = customSettings.lightProbeUsageMode;
-                    break;
-
-                case "reflectionProbeUsage":
-                    meshRenderer.reflectionProbeUsage = customSettings.reflectionProbeUsageMode;
-                    break;
+                if (applyToChildren)
+                {
+                    foreach (var renderer in transform.GetComponentsInChildren<MeshRenderer>(true))
+                        result.Add(renderer);
+                }
+                else
+                {
+                    var renderer = transform.GetComponent<MeshRenderer>();
+                    if (renderer != null)
+                        result.Add(renderer);
+                }
             }
 
-            EditorUtility.SetDirty(meshRenderer);
+            return result;
+        }
+
+        private static void ApplySettingSingleParam(Transform[] selection, string paramName)
+        {
+            foreach (var meshRenderer in GetTargetRenderers(selection))
+            {
+                switch (paramName)
+                {
+                    case "shadowCastingMode":
+                        meshRenderer.shadowCastingMode = customSettings.shadowCastingMode;
+                        break;
+
+                    case "allowOcclusionWhenDynamic":
+                        meshRenderer.allowOcclusionWhenDynamic = customSettings.allowOcclusionWhenDynamic;
+                        break;
+
+                    case "renderingLayerMask":
+                        meshRenderer.renderingLayerMask = (uint)customSettings.renderingLayerMask;
+                        break;
+
+                    case "lightProbeUsage":
+                        meshRenderer.lightProbeUsage = customSettings.lightProbeUsageMode;
+                        break;
+
+                    case "reflectionProbeUsage":
+                        meshRenderer.reflectionProbeUsage = customSettings.reflectionProbeUsageMode;
+                        break;
+                }
+
+                EditorUtility.SetDirty(meshRenderer);
+            }
+
             Helpful.Debug("Settings applied");
         }
 
-        private static void ApplySettingsToAll(Transform parent)
+        private static void ApplySettingsToAll(Transform[] selection)
         {
-            if (parent == null) return;
-
-            MeshRenderer[] renderers = parent.GetComponentsInChildren<MeshRenderer>();
-            foreach (var renderer in renderers)
+            foreach (var renderer in GetTargetRenderers(selection))
             {
                 renderer.shadowCastingMode = customSettings.shadowCastingMode;
                 renderer.allowOcclusionWhenDynamic = customSettings.allowOcclusionWhenDynamic;
