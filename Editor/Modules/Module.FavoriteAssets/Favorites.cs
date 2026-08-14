@@ -18,6 +18,9 @@ namespace Kinogoblin.Editor.FavoriteAssets
         [SerializeField]
         private List<KeyValueFavorite> m_favoritesKeyed = new List<KeyValueFavorite>();
 
+        [SerializeField]
+        private List<FavoriteList> m_customLists = new List<FavoriteList>();
+
         internal void CopyFrom(ProfileData user)
         {
             foreach (KeyValueFavorite kvPair in user.GetAssetFavoritesKeyed())
@@ -33,7 +36,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
         internal void RemoveFromFavorites(string id)
         {
-            for (int i = m_favoritesKeyed.Count - 1; 1 >= 0; i--)
+            for (int i = m_favoritesKeyed.Count - 1; i >= 0; i--)
             {
                 if (m_favoritesKeyed[i].ContainsID(id))
                 {
@@ -49,6 +52,11 @@ namespace Kinogoblin.Editor.FavoriteAssets
                         InternalEditorUtility.RepaintAllViews();
                         m_IsDirty = true;
                     }
+
+                    //No longer a favorite at all, so it can't remain assigned to any custom list either
+                    foreach (FavoriteList list in m_customLists)
+                        list.Remove(id);
+
                     return;
                 }
             }
@@ -139,6 +147,69 @@ namespace Kinogoblin.Editor.FavoriteAssets
             return m_favoritesKeyed;
         }
 
+        internal List<FavoriteList> GetCustomLists()
+        {
+            return m_customLists;
+        }
+
+        internal FavoriteList CreateList(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return null;
+
+            FavoriteList existing = m_customLists.Find(val => val.Name == name);
+            if (existing != null)
+                return existing;
+
+            FavoriteList list = new FavoriteList { Name = name };
+            m_customLists.Add(list);
+            m_IsDirty = true;
+            InternalEditorUtility.RepaintAllViews();
+            return list;
+        }
+
+        internal void DeleteList(FavoriteList list)
+        {
+            m_customLists.Remove(list);
+            m_IsDirty = true;
+            InternalEditorUtility.RepaintAllViews();
+        }
+
+        //Only already-favorited items can be filed into a list
+        internal void AddToList(FavoriteList list, string id)
+        {
+            if (list == null || !ContainsFavoriteID(id))
+                return;
+
+            list.Add(id);
+            m_IsDirty = true;
+            InternalEditorUtility.RepaintAllViews();
+        }
+
+        internal void RemoveFromList(FavoriteList list, string id)
+        {
+            list.Remove(id);
+            m_IsDirty = true;
+            InternalEditorUtility.RepaintAllViews();
+        }
+
+        //Favorited items not (yet) filed into any custom list - so nothing becomes invisible in list view
+        internal List<string> GetUnlistedFavoriteIDs()
+        {
+            HashSet<string> listed = new HashSet<string>();
+            foreach (FavoriteList list in m_customLists)
+                foreach (string id in list.ItemIds)
+                    listed.Add(id);
+
+            List<string> unlisted = new List<string>();
+            foreach (KeyValueFavorite keyedFavorite in m_favoritesKeyed)
+                foreach (string id in keyedFavorite.Favorites)
+                    if (!listed.Contains(id))
+                        unlisted.Add(id);
+
+            return unlisted;
+        }
+
         internal void CleanData()
         {
             //Favorites cleanup
@@ -167,6 +238,10 @@ namespace Kinogoblin.Editor.FavoriteAssets
             //Delete obsolete keys
             foreach (KeyValueFavorite markedKey in m_markedKeysForDelete)
                 m_favoritesKeyed.Remove(markedKey);
+
+            //Custom lists can only reference ids that are still favorited
+            foreach (FavoriteList list in m_customLists)
+                list.ItemIds.RemoveAll(id => !ContainsFavoriteID(id));
 
             ProfileData.Instance.updateCache();
         }

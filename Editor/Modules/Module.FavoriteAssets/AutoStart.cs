@@ -43,6 +43,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
             }
 
             EditorApplication.projectWindowItemOnGUI += projectWindowItemOnGUI;
+            EditorApplication.hierarchyWindowItemOnGUI += hierarchyWindowItemOnGUI;
         }
 
         [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/ShowFavoritesWindow", priority = WINDOWMENUITEMPRIO)]
@@ -63,15 +64,46 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 GUI.Label(selectionRect, m_iconFavorite, GUIStyle.none);
         }
 
+        //Delegate for EditorApplication.hierarchyWindowItemOnGUI - same marker, but for GameObjects
+        //that are in that scene's Scene Favorites list
+        private static void hierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
+        {
+            if (ProfileData.Instance == null)
+                return;
+
+            GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (go == null)
+                return;
+
+            string sceneGUID = ProfileData.Instance.GetSceneGUID(go.scene);
+            if (string.IsNullOrEmpty(sceneGUID))
+                return;
+
+            SceneFavorite sceneFavorites = ProfileData.Instance.GetSceneFavorites(sceneGUID);
+            if (sceneFavorites == null || !sceneFavorites.HasValidValues())
+                return;
+
+            string globalId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
+            if (sceneFavorites.ContainsGlobalId(globalId))
+                GUI.Label(selectionRect, m_iconFavorite, GUIStyle.none);
+        }
+
         [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/Mark asset as favorite", priority = WINDOWMENUITEMPRIO)]
         public static void ToggleFavorite()
         {
             Window.Init(true);
-            foreach (UnityEngine.Object selectedObj in Selection.objects)
-                ProfileData.Instance.ToggleAssetFavorite(selectedObj);
+
+            //If the "Scene Favorites" tab is the one currently open, the hotkey favorites the
+            //selection there instead of in Personal Favorites.
+            bool addToSceneFavorites = Window.IsSceneFavoritesTabActive;
 
             foreach (UnityEngine.Object selectedObj in Selection.objects)
-                ProfileData.Instance.ToggleSceneObjectFavorite(selectedObj);
+            {
+                if (addToSceneFavorites)
+                    ProfileData.Instance.ToggleSceneObjectFavorite(selectedObj);
+                else
+                    ProfileData.Instance.ToggleAssetFavorite(selectedObj);
+            }
         }
         
         [MenuItem("Tools/Kinogoblin tools/HotKeys/Mark asset as favorite %#T", priority = WINDOWMENUITEMPRIO)]

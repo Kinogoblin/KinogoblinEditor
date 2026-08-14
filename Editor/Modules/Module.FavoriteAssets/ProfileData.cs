@@ -99,6 +99,9 @@ namespace Kinogoblin.Editor.FavoriteAssets
         [SerializeField]
         private SceneFavoriteManager m_sceneFavorites = new SceneFavoriteManager();
 
+        [SerializeField]
+        private SceneCameraBookmarkManager m_sceneCameraBookmarks = new SceneCameraBookmarkManager();
+
         ///////////////////////////////////
         [SerializeField]
         public List<HierarchyCustomColors> customHierarchy = new List<HierarchyCustomColors>();
@@ -162,12 +165,6 @@ namespace Kinogoblin.Editor.FavoriteAssets
             set { m_history.HistorySortState = value; }
         }
 
-        public int SceneViewState
-        {
-            get { return m_sceneFavorites.ViewState; }
-            set { m_sceneFavorites.ViewState = value; }
-        }
-
         private void OnEnable()
         {
             m_history = new History();
@@ -214,6 +211,8 @@ namespace Kinogoblin.Editor.FavoriteAssets
         {
             m_history.CleanData();
             m_favorites.CleanData();
+            m_sceneFavorites.CleanData();
+            m_sceneCameraBookmarks.CleanData();
 
             serializeAssetFavorites();
         }
@@ -229,9 +228,34 @@ namespace Kinogoblin.Editor.FavoriteAssets
             return m_favorites.GetAssetFavoritesKeyed();
         }
 
-        internal List<KeyValueFavorite> GetCurrentSceneKeyValueFavorites()
+        internal List<FavoriteList> GetCustomLists()
         {
-            return m_sceneFavorites.GetCurrentSceneKeyValueFavorites();
+            return m_favorites.GetCustomLists();
+        }
+
+        internal FavoriteList CreateList(string name)
+        {
+            return m_favorites.CreateList(name);
+        }
+
+        internal void DeleteList(FavoriteList list)
+        {
+            m_favorites.DeleteList(list);
+        }
+
+        internal void AddToList(FavoriteList list, string id)
+        {
+            m_favorites.AddToList(list, id);
+        }
+
+        internal void RemoveFromList(FavoriteList list, string id)
+        {
+            m_favorites.RemoveFromList(list, id);
+        }
+
+        internal List<string> GetUnlistedFavoriteIDs()
+        {
+            return m_favorites.GetUnlistedFavoriteIDs();
         }
 
         internal void SwapActiveUser(ProfileData newActiveUser)
@@ -264,7 +288,46 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
         internal void ToggleSceneObjectFavorite(UnityEngine.Object selectedObj)
         {
-            m_sceneFavorites.ToggleSceneObjectFavorite(selectedObj);
+            if (selectedObj is GameObject go)
+                m_sceneFavorites.ToggleSceneObjectFavorite(go);
+        }
+
+        internal void AddSceneObjectFavorite(GameObject go)
+        {
+            m_sceneFavorites.AddSceneObjectFavorite(go);
+        }
+
+        internal void RemoveSceneObjectFavorite(string sceneGUID, string globalObjectId)
+        {
+            m_sceneFavorites.RemoveSceneObjectFavorite(sceneGUID, globalObjectId);
+        }
+
+        internal SceneFavorite GetSceneFavorites(string sceneGUID)
+        {
+            return m_sceneFavorites.GetSceneFavorites(sceneGUID);
+        }
+
+        internal string GetSceneGUID(UnityEngine.SceneManagement.Scene scene)
+        {
+            return SceneFavoriteManager.GetSceneGUID(scene);
+        }
+
+        internal SceneCameraBookmarks GetCameraBookmarks(string sceneGUID)
+        {
+            return m_sceneCameraBookmarks.GetBookmarks(sceneGUID);
+        }
+
+        internal void AddCameraBookmark(string sceneGUID, CameraBookmark bookmark)
+        {
+            m_sceneCameraBookmarks.GetOrCreateBookmarks(sceneGUID).Add(bookmark);
+            EditorUtility.SetDirty(this);
+            InternalEditorUtility.RepaintAllViews();
+        }
+
+        internal void RemoveCameraBookmark(string sceneGUID, int index)
+        {
+            m_sceneCameraBookmarks.RemoveBookmark(sceneGUID, index);
+            EditorUtility.SetDirty(this);
         }
 
         internal bool ContainsFavoriteID(string guid)

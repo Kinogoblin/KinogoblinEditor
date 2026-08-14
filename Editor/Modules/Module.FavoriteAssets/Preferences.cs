@@ -10,6 +10,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
     {
         public const string QSPrefsMainWindowState = " .MainWindowState";
         public const string QSPrefsHistorySortState = " .HistorySortState";
+        public const string QSPrefsFavoritesGroupMode = " .FavoritesGroupMode";
 
         public const string QSPrefsAutoStart = " .AutoStart";
         public const string QSPrefsKeepHistory = " .KeepHistory";
