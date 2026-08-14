@@ -51,6 +51,7 @@ namespace Kinogoblin.Editor
             RegisterComponentType(typeof(SphereCollider), "SphereCollider Icon");
             RegisterComponentType(typeof(CapsuleCollider), "CapsuleCollider Icon");
             RegisterComponentType(typeof(MeshCollider), "MeshCollider Icon");
+            RegisterComponentType(typeof(Rigidbody), "Rigidbody Icon");
             RegisterComponentType(typeof(AudioSource), "AudioSource Icon");
             RegisterComponentType(typeof(Animation), "Animation Icon");
             RegisterComponentType(typeof(Animator), "Animator Icon");
