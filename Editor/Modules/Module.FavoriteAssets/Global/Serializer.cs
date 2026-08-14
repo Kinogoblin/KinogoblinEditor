@@ -28,7 +28,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
             return type.AssemblyQualifiedName;
         }
 
-        [SerializeField]
+        [Serializable]
         public class StringList
         {
             public List<string> Items = new List<string>();
