@@ -100,7 +100,17 @@ namespace Kinogoblin.Editor.FavoriteAssets
         internal static UnityEngine.Object GetPrefabParent(UnityEngine.Object obj)
         {
 #if UNITY_2018_3_OR_NEWER
-            return PrefabUtility.GetCorrespondingObjectFromSource(obj);
+            //A Prefab Variant asset is internally stored as an overridden instance of its base,
+            //so IsPartOfPrefabInstance(obj) returns true even for the Variant asset ITSELF when
+            //selected directly in the Project view (not placed in a scene) - resolving through
+            //GetCorrespondingObjectFromSource in that case would incorrectly walk up to the base
+            //Prefab. So explicitly exclude anything that is already part of a Prefab Asset on disk;
+            //only resolve to the source Prefab for real instances (placed in a scene, or nested
+            //inside another prefab being edited).
+            if (!PrefabUtility.IsPartOfPrefabAsset(obj) && PrefabUtility.IsPartOfPrefabInstance(obj))
+                return PrefabUtility.GetCorrespondingObjectFromSource(obj);
+
+            return null;
 #else
             return PrefabUtility.GetPrefabParent(obj);
 #endif

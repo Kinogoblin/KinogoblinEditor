@@ -15,11 +15,15 @@ namespace Kinogoblin.Editor.FavoriteAssets
         {
             this.cachedPath = AssetDatabase.GUIDToAssetPath(assetId);
             UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath(this.cachedPath, typeof(UnityEngine.Object));
-            var preview = AssetPreview.GetAssetPreview(obj);
-            if (preview != null)
+            if (obj != null)
             {
                 instanceID = obj.GetInstanceID();
                 isCachable = true;
+
+                //Kick off preview generation now - AssetPreview.GetAssetPreview is async and often
+                //returns null on this very first call while Unity renders the thumbnail in the
+                //background. CheckIfReady() below keeps retrying on later repaints until it succeeds.
+                cachedTexture = AssetPreview.GetAssetPreview(obj);
             }
         }
 

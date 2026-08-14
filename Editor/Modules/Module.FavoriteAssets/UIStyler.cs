@@ -8,6 +8,10 @@ namespace Kinogoblin.Editor.FavoriteAssets
         internal static void DrawAssetFromID(string assetID, bool showPreview)
         {
             UnityEngine.Object cachedObject = AssetDatabase.LoadAssetAtPath(ProfileData.Instance.GetCachedObjectPath(assetID), typeof(UnityEngine.Object));
+            //Fall back to a direct GUID lookup if the preview cache hasn't picked this asset up yet,
+            //otherwise cachedObject is null here and both the preview and drag-and-drop silently break
+            if (cachedObject == null)
+                cachedObject = AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetID));
 
             //This shows AssetPreview
             GUILayout.BeginHorizontal();
@@ -27,8 +31,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
             }
 
             GUI.SetNextControlName(assetID);
-            //If the object path has not been cached just find it using its guid
-            EditorGUILayout.ObjectField((cachedObject != null) ? cachedObject : AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(assetID)), typeof(UnityEngine.Object), false);
+            EditorGUILayout.ObjectField(cachedObject, typeof(UnityEngine.Object), false);
 
             //EditorGUIUtility.labelWidth = 0;
 

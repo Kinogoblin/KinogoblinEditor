@@ -40,7 +40,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D windowPaneIconCached = null;
         public Texture2D WindowPaneIcon
         {
-            get { return (windowPaneIconCached != null) ? windowPaneIconCached : getInvertedForProSkin(m_windowPaneIcon, false); }
+            get { return getInvertedForProSkin(m_windowPaneIcon, false, ref windowPaneIconCached); }
         }
 
         [SerializeField]
@@ -48,7 +48,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D deleteIconCached = null;
         public Texture2D DeleteIcon
         {
-            get { return (deleteIconCached != null) ? deleteIconCached : getInvertedForProSkin(m_deleteIcon, false); }
+            get { return getInvertedForProSkin(m_deleteIcon, false, ref deleteIconCached); }
         }
 
         [SerializeField]
@@ -56,7 +56,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D favoriteMarkerIconCached = null;
         public Texture2D FavoriteMarkerIcon
         {
-            get { return (favoriteMarkerIconCached != null) ? favoriteMarkerIconCached : getInvertedForProSkin(m_favoriteMarkerIcon, false); }
+            get { return getInvertedForProSkin(m_favoriteMarkerIcon, false, ref favoriteMarkerIconCached); }
         }
 
         [SerializeField]
@@ -64,7 +64,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D favoriteIconCached = null;
         public Texture2D FavoriteIcon
         {
-            get { return (favoriteIconCached != null) ? favoriteIconCached : getInvertedForProSkin(m_favoriteIcon, false); }
+            get { return getInvertedForProSkin(m_favoriteIcon, false, ref favoriteIconCached); }
         }
 
         [SerializeField]
@@ -72,7 +72,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D folderIconCached = null;
         public Texture2D FolderIcon
         {
-            get { return (folderIconCached != null) ? folderIconCached : getInvertedForProSkin(m_folderIcon, false); }
+            get { return getInvertedForProSkin(m_folderIcon, false, ref folderIconCached); }
         }
 
         [SerializeField]
@@ -80,7 +80,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D settingsIconCached = null;
         public Texture2D SettingsIcon
         {
-            get { return (settingsIconCached != null) ? settingsIconCached : getInvertedForProSkin(m_settingsIcon, true); }
+            get { return getInvertedForProSkin(m_settingsIcon, true, ref settingsIconCached); }
         }
 
         [SerializeField]
@@ -88,7 +88,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D usersIconCached = null;
         public Texture2D UsersIcon
         {
-            get { return (usersIconCached != null) ? usersIconCached : getInvertedForProSkin(m_usersIcon, true); }
+            get { return getInvertedForProSkin(m_usersIcon, true, ref usersIconCached); }
         }
 
         [SerializeField]
@@ -96,7 +96,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D sceneIconCached = null;
         public Texture2D SceneIcon
         {
-            get { return (sceneIconCached != null) ? sceneIconCached : getInvertedForProSkin(m_sceneIcon, false); }
+            get { return getInvertedForProSkin(m_sceneIcon, false, ref sceneIconCached); }
         }
 
         [SerializeField]
@@ -104,7 +104,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D historyIconCached = null;
         public Texture2D HistoryIcon
         {
-            get { return (historyIconCached != null) ? historyIconCached : getInvertedForProSkin(m_historyIcon, true); }
+            get { return getInvertedForProSkin(m_historyIcon, true, ref historyIconCached); }
         }
 
         [SerializeField]
@@ -112,7 +112,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D copyIconCached = null;
         public Texture2D CopyIcon
         {
-            get { return (copyIconCached != null) ? copyIconCached : getInvertedForProSkin(m_copyIcon, true); }
+            get { return getInvertedForProSkin(m_copyIcon, true, ref copyIconCached); }
         }
 
         [SerializeField]
@@ -120,7 +120,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D plusIconCached = null;
         public Texture2D PlusIcon
         {
-            get { return (plusIconCached != null) ? plusIconCached : getInvertedForProSkin(m_plusIcon, true); }
+            get { return getInvertedForProSkin(m_plusIcon, true, ref plusIconCached); }
         }
 
         [SerializeField]
@@ -128,7 +128,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D selectedIconCached = null;
         public Texture2D SelectedIcon
         {
-            get { return (selectedIconCached != null) ? selectedIconCached : getInvertedForProSkin(m_selectedIcon, true); }
+            get { return getInvertedForProSkin(m_selectedIcon, true, ref selectedIconCached); }
         }
 
         [SerializeField]
@@ -136,26 +136,46 @@ namespace Kinogoblin.Editor.FavoriteAssets
         private Texture2D swapIconCached = null;
         public Texture2D SwapIcon
         {
-            get { return (swapIconCached != null) ? swapIconCached : getInvertedForProSkin(m_swapIcon, true); }
+            get { return getInvertedForProSkin(m_swapIcon, true, ref swapIconCached); }
         }
 
-        private Texture2D getInvertedForProSkin(Texture2D orig, bool invertIfDarkSkin)
+        //Inverts icon colors for pro (dark) skin and actually caches the result, so the pixel loop below
+        //only ever runs once per icon per session instead of on every Window.OnEnable (window gets
+        //recreated often - layout rebuilds, Maximize on Play, etc). A failure here is caught so it can't
+        //silently abort whatever init code runs after this call (e.g. Window.OnEnable).
+        private Texture2D getInvertedForProSkin(Texture2D orig, bool invertIfDarkSkin, ref Texture2D cache)
         {
+            if (orig == null)
+                return null;
+
             if (!invertIfDarkSkin || !EditorGUIUtility.isProSkin)
                 return orig;
 
-            Texture2D inverted = new Texture2D(orig.width, orig.height, TextureFormat.ARGB32, false);
-            for (int x = 0; x < orig.width; x++)
+            if (cache != null)
+                return cache;
+
+            try
             {
-                for (int y = 0; y < orig.height; y++)
+                Texture2D inverted = new Texture2D(orig.width, orig.height, TextureFormat.ARGB32, false);
+                for (int x = 0; x < orig.width; x++)
                 {
-                    Color origColor = orig.GetPixel(x, y);
-                    Color invertedColor = new Color(1 - origColor.r, 1 - origColor.g, 1 - origColor.b, origColor.a);
-                    inverted.SetPixel(x, y, (origColor.a > 0) ? invertedColor : origColor);
+                    for (int y = 0; y < orig.height; y++)
+                    {
+                        Color origColor = orig.GetPixel(x, y);
+                        Color invertedColor = new Color(1 - origColor.r, 1 - origColor.g, 1 - origColor.b, origColor.a);
+                        inverted.SetPixel(x, y, (origColor.a > 0) ? invertedColor : origColor);
+                    }
                 }
+                inverted.Apply();
+                inverted.hideFlags = HideFlags.HideAndDontSave;
+                cache = inverted;
+                return inverted;
             }
-            inverted.Apply();
-            return inverted;
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[Kinogoblin Editor] Failed to invert icon '{orig.name}' for Pro Skin, falling back to original. {e.Message}");
+                return orig;
+            }
         }
     }
 }
