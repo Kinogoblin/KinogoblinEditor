@@ -36,6 +36,12 @@ namespace Kinogoblin.Editor.FavoriteAssets
             InternalEditorUtility.RepaintAllViews();
         }
 
+        internal void RenameBookmark(string sceneGUID, int index, string newName)
+        {
+            GetBookmarks(sceneGUID)?.Rename(index, newName);
+            InternalEditorUtility.RepaintAllViews();
+        }
+
         internal void CleanData()
         {
             //Drop bookmark groups for scenes that no longer exist on disk

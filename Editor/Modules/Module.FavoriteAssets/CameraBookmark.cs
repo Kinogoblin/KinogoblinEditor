@@ -6,6 +6,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
     [System.Serializable]
     public class CameraBookmark
     {
+        public string name = "";
         public Vector3 pivot;
         public Quaternion rotation;
         public float size;

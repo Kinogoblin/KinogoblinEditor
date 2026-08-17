@@ -12,10 +12,16 @@ namespace Kinogoblin.Editor.FavoriteAssets
     public class CameraBookmarksOverlay : IMGUIOverlay
     {
         private const string OverlayID = "Kinogoblin.CameraBookmarksOverlay";
+        private const string RenameControlName = "Kinogoblin.CameraBookmarksOverlay.RenameField";
 
         //Armed by the Delete toggle: the next bookmark button click deletes instead of jumping.
         //Clicking the toggle again, or clicking anywhere else in the overlay, disarms it.
         private bool m_deleteMode;
+
+        //Index of the bookmark currently being renamed inline, or -1 if none.
+        private int m_renamingIndex = -1;
+        private string m_renameBuffer = "";
+        private bool m_focusRenameField;
 
         public override void OnGUI()
         {
@@ -40,13 +46,38 @@ namespace Kinogoblin.Editor.FavoriteAssets
             {
                 for (int i = 0; i < bookmarks.Bookmarks.Count; i++)
                 {
+                    if (m_renamingIndex == i)
+                    {
+                        if (drawRenameRow(sceneGUID, i))
+                            break;
+                        continue;
+                    }
+
+                    GUILayout.BeginHorizontal();
+
                     Color prevColor = GUI.backgroundColor;
                     if (m_deleteMode)
                         GUI.backgroundColor = Color.red;
 
-                    bool clicked = GUILayout.Button("Position " + (i + 1), GUILayout.Width(140), GUILayout.Height(20));
+                    CameraBookmark bookmark = bookmarks.Bookmarks[i];
+                    string label = string.IsNullOrEmpty(bookmark.name) ? "Position " + (i + 1) : bookmark.name;
+                    bool clicked = GUILayout.Button(label, GUILayout.Width(116), GUILayout.Height(20));
 
                     GUI.backgroundColor = prevColor;
+
+                    GUI.enabled = !m_deleteMode;
+                    bool renameClicked = GUILayout.Button(new GUIContent("✎", "Rename"), GUILayout.Width(20), GUILayout.Height(20));
+                    GUI.enabled = true;
+
+                    GUILayout.EndHorizontal();
+
+                    if (renameClicked)
+                    {
+                        m_renamingIndex = i;
+                        m_renameBuffer = string.IsNullOrEmpty(bookmark.name) ? label : bookmark.name;
+                        m_focusRenameField = true;
+                        break;
+                    }
 
                     if (clicked)
                     {
@@ -83,6 +114,58 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 m_deleteMode = false;
                 Event.current.Use();
             }
+        }
+
+        //Draws the inline rename row for bookmark `index`. Returns true once renaming has been
+        //committed or cancelled, so the caller knows to stop iterating for this frame.
+        private bool drawRenameRow(string sceneGUID, int index)
+        {
+            GUILayout.BeginHorizontal();
+
+            GUI.SetNextControlName(RenameControlName);
+            m_renameBuffer = GUILayout.TextField(m_renameBuffer, GUILayout.Width(96), GUILayout.Height(20));
+
+            if (m_focusRenameField)
+            {
+                EditorGUI.FocusTextInControl(RenameControlName);
+                m_focusRenameField = false;
+            }
+
+            bool confirmClicked = GUILayout.Button(new GUIContent("✓", "Save"), GUILayout.Width(20), GUILayout.Height(20));
+            bool cancelClicked = GUILayout.Button(new GUIContent("✕", "Cancel"), GUILayout.Width(20), GUILayout.Height(20));
+
+            GUILayout.EndHorizontal();
+
+            bool confirmedByKey = false;
+            bool cancelledByKey = false;
+            if (GUI.GetNameOfFocusedControl() == RenameControlName && Event.current.type == EventType.KeyDown)
+            {
+                if (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter)
+                {
+                    confirmedByKey = true;
+                    Event.current.Use();
+                }
+                else if (Event.current.keyCode == KeyCode.Escape)
+                {
+                    cancelledByKey = true;
+                    Event.current.Use();
+                }
+            }
+
+            if (confirmClicked || confirmedByKey)
+            {
+                ProfileData.Instance.RenameCameraBookmark(sceneGUID, index, m_renameBuffer.Trim());
+                m_renamingIndex = -1;
+                return true;
+            }
+
+            if (cancelClicked || cancelledByKey)
+            {
+                m_renamingIndex = -1;
+                return true;
+            }
+
+            return false;
         }
 
         private static void goToBookmark(SceneView sceneView, CameraBookmark bookmark)

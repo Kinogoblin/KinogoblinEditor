@@ -23,5 +23,11 @@ namespace Kinogoblin.Editor.FavoriteAssets
             if (index >= 0 && index < m_bookmarks.Count)
                 m_bookmarks.RemoveAt(index);
         }
+
+        internal void Rename(int index, string newName)
+        {
+            if (index >= 0 && index < m_bookmarks.Count)
+                m_bookmarks[index].name = newName;
+        }
     }
 }

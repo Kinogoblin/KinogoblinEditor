@@ -44,6 +44,15 @@ namespace Kinogoblin.Editor.FavoriteAssets
 
             EditorApplication.projectWindowItemOnGUI += projectWindowItemOnGUI;
             EditorApplication.hierarchyWindowItemOnGUI += hierarchyWindowItemOnGUI;
+            EditorApplication.hierarchyChanged += onHierarchyChanged;
+        }
+
+        //Scene Favorites cache resolved GameObject references (GlobalObjectId lookups are slow),
+        //so invalidate them whenever the hierarchy structure actually changes rather than every repaint.
+        private static void onHierarchyChanged()
+        {
+            if (ProfileData.Instance != null)
+                ProfileData.Instance.InvalidateSceneFavoriteCaches();
         }
 
         [MenuItem("Tools/Kinogoblin tools/FavoriteAssets/ShowFavoritesWindow", priority = WINDOWMENUITEMPRIO)]
@@ -83,8 +92,7 @@ namespace Kinogoblin.Editor.FavoriteAssets
             if (sceneFavorites == null || !sceneFavorites.HasValidValues())
                 return;
 
-            string globalId = GlobalObjectId.GetGlobalObjectIdSlow(go).ToString();
-            if (sceneFavorites.ContainsGlobalId(globalId))
+            if (sceneFavorites.ContainsResolvedInstanceID(instanceID))
                 GUI.Label(selectionRect, m_iconFavorite, GUIStyle.none);
         }
 

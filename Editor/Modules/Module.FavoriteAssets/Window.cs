@@ -345,10 +345,9 @@ namespace Kinogoblin.Editor.FavoriteAssets
                 //Copy since removal below mutates the underlying list
                 foreach (string globalId in sceneFavorites.FavoriteGlobalIds.ToArray())
                 {
-                    if (!GlobalObjectId.TryParse(globalId, out GlobalObjectId gid))
-                        continue;
-
-                    GameObject go = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(gid) as GameObject;
+                    //Resolved through SceneFavorite's cache - GlobalObjectId resolution is slow,
+                    //so it must not run fresh on every repaint (this tab redraws at 10Hz).
+                    GameObject go = sceneFavorites.ResolveGameObject(globalId);
                     if (go == null)
                         continue;
 

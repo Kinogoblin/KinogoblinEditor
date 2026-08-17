@@ -76,5 +76,13 @@ namespace Kinogoblin.Editor.FavoriteAssets
             foreach (SceneFavorite entry in m_sceneFavorites)
                 entry.CleanupMissing();
         }
+
+        //Resolved GameObject/instance-id caches go stale whenever the hierarchy structure changes
+        //(objects created/destroyed/reparented, scenes loaded/unloaded).
+        internal void InvalidateAllCaches()
+        {
+            foreach (SceneFavorite entry in m_sceneFavorites)
+                entry.InvalidateCache();
+        }
     }
 }

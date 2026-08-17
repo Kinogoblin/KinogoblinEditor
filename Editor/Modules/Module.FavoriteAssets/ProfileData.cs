@@ -312,6 +312,11 @@ namespace Kinogoblin.Editor.FavoriteAssets
             return SceneFavoriteManager.GetSceneGUID(scene);
         }
 
+        internal void InvalidateSceneFavoriteCaches()
+        {
+            m_sceneFavorites.InvalidateAllCaches();
+        }
+
         internal SceneCameraBookmarks GetCameraBookmarks(string sceneGUID)
         {
             return m_sceneCameraBookmarks.GetBookmarks(sceneGUID);
@@ -327,6 +332,12 @@ namespace Kinogoblin.Editor.FavoriteAssets
         internal void RemoveCameraBookmark(string sceneGUID, int index)
         {
             m_sceneCameraBookmarks.RemoveBookmark(sceneGUID, index);
+            EditorUtility.SetDirty(this);
+        }
+
+        internal void RenameCameraBookmark(string sceneGUID, int index, string newName)
+        {
+            m_sceneCameraBookmarks.RenameBookmark(sceneGUID, index, newName);
             EditorUtility.SetDirty(this);
         }
 
